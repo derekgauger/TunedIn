@@ -9,11 +9,11 @@ import {
   ListItemText,
 } from "@mui/material";
 import { Business, People, EmojiObjects, History } from "@mui/icons-material";
-import ContainerPaper from "../../Components/ContainerPaper/ContainerPaper";
-import PageHeader from "../../Components/PageHeader/PageHeader";
+import ContainerPaper from "../../Components/GeneralComponents/ContainerPaper/ContainerPaper";
+import PageHeader from "../../Components/GeneralComponents/PageHeader/PageHeader";
 import { AboutListItemData, AboutSectionData } from "../../Utils/types";
-import CompanyInfo from "../../Components/AboutPageSections/CompanyInfo";
-import FounderInfo from "../../Components/AboutPageSections/FounderInfo";
+import CompanyInfo from "../../Components/AboutComponents/CompanyInfo";
+import FounderInfo from "../../Components/AboutComponents/FounderInfo";
 
 const mission: AboutSectionData = {
   title: "Our Mission",
@@ -62,7 +62,9 @@ const About: React.FC = () => {
     <List>
       {items.map((item, index) => (
         <ListItem key={index}>
-          <ListItemIcon sx={{ color: "primary.main"}}>{item.icon}</ListItemIcon>
+          <ListItemIcon sx={{ color: "primary.main" }}>
+            {item.icon}
+          </ListItemIcon>
           <ListItemText primary={item.primary} secondary={item.secondary} />
         </ListItem>
       ))}
@@ -100,7 +102,7 @@ const About: React.FC = () => {
         </Grid>
 
         <Grid item xs={12}>
-          <FounderInfo renderListItems={renderListItems}/>
+          <FounderInfo renderListItems={renderListItems} />
         </Grid>
       </Grid>
     </ContainerPaper>

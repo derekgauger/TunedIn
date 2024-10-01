@@ -4,7 +4,7 @@ import { Field, Form, Formik } from "formik";
 import PasswordField from "../Password/PasswordField";
 import PasswordStrengthMeter from "../Password/PasswordStrengthMeter";
 import { RegisterSchema } from "../Validations";
-import ErrorMessage from "../../ErrorMessage/ErrorMessage";
+import ErrorMessage from "../../GeneralComponents/ErrorMessage/ErrorMessage";
 import InputMask from "react-input-mask";
 
 interface RegisterFormProps {
@@ -96,11 +96,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
                 <Grid item xs={6}>
                   <Field name="phoneNumber">
                     {({ field }) => (
-                      <InputMask
-                        {...field}
-                        mask="(999) 999-9999"
-                        maskChar=""
-                      >
+                      <InputMask {...field} mask="(999) 999-9999" maskChar="">
                         {(inputProps) => (
                           <TextField
                             {...inputProps}

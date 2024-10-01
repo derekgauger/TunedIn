@@ -16,7 +16,7 @@ import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import ContainerPaper from "../../Components/ContainerPaper/ContainerPaper";
+import ContainerPaper from "../../Components/GeneralComponents/ContainerPaper/ContainerPaper";
 import { useLocation } from "react-router-dom";
 
 const SectionPaper = styled(Paper)(({ theme }) => ({

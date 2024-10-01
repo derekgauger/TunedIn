@@ -1,5 +1,5 @@
+import { enqueueSnackbar } from "notistack";
 import api from "../Utils/api";
-import { User } from "../Utils/types";
 
 export const sendLoginRequest = async (
   loginIdentifier: string,
@@ -13,7 +13,9 @@ export const sendLoginRequest = async (
     localStorage.setItem("token", response.data.token);
     return response;
   } catch (error) {
-    console.error("Login failed:", error.response.data.message);
+    enqueueSnackbar(error.response.data.message, {
+      variant: "error",
+    });
   }
 };
 
@@ -34,10 +36,11 @@ export const sendRegisterRequest = async (
       lastName,
       phoneNumber,
     });
-    console.log(response.data);
     return response;
   } catch (error) {
-    console.error("Registration failed:", error.response.data.message);
+    enqueueSnackbar(error.response.data.message, {
+      variant: "error",
+    });
   }
 };
 
@@ -52,11 +55,21 @@ export const sendUserInfoRequest = async () => {
     localStorage.setItem("user", JSON.stringify(response.data));
     return response;
   } catch (error) {
-    console.error("User info request failed:", error.response.data.message);
+    enqueueSnackbar(error.response.data.message, {
+      variant: "error",
+    });
   }
 };
 
-export const sendUserUpdateRequest = async (id: number, firstName: string, lastName: string, username: string, email: string, phoneNumber: string, goal: string) => {
+export const sendUserUpdateRequest = async (
+  id: number,
+  firstName: string,
+  lastName: string,
+  username: string,
+  email: string,
+  phoneNumber: string,
+  goal: string
+) => {
   try {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -75,6 +88,24 @@ export const sendUserUpdateRequest = async (id: number, firstName: string, lastN
     localStorage.setItem("user", JSON.stringify(response.data));
     return response;
   } catch (error) {
-    console.error("User info update failed:", error.response.data.message);
+    enqueueSnackbar(error.response.data.message, {
+      variant: "error",
+    });
+  }
+};
+
+export const sendUserDeleteRequest = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("Use token not found. Try logging in again.");
+      return;
+    }
+    const response = await api.delete("/protected/delete-account");
+    return response;
+  } catch (error) {
+    enqueueSnackbar(error.response.data.message, {
+      variant: "error",
+    });
   }
 };

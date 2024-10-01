@@ -6,65 +6,17 @@ import {
   Grid,
   Card,
   CardMedia,
-  Modal,
-  IconButton,
 } from "@mui/material";
-import CloseIcon from '@mui/icons-material/Close';
 import ReactPlayer from "react-player";
-import ContainerPaper from "../../Components/ContainerPaper/ContainerPaper";
-import PageHeader from "../../Components/PageHeader/PageHeader";
-
-const FullScreenImage: React.FC<{ src: string; onClose: () => void }> = ({ src, onClose }) => (
-  <Modal
-    open={true}
-    onClose={onClose}
-    aria-labelledby="fullscreen-image"
-    aria-describedby="fullscreen-image-description"
-  >
-    <Box sx={{
-      position: 'absolute',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
-      width: '90%',
-      height: '90%',
-      bgcolor: 'background.paper',
-      boxShadow: 24,
-      p: 1,
-    }}>
-      <IconButton
-        aria-label="close"
-        onClick={onClose}
-        sx={{
-          position: 'absolute',
-          right: 8,
-          top: 8,
-          color: 'white',
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          '&:hover': {
-            backgroundColor: 'rgba(0, 0, 0, 0.7)',
-          },
-        }}
-      >
-        <CloseIcon />
-      </IconButton>
-      <Box
-        component="img"
-        sx={{
-          width: '100%',
-          height: '100%',
-          objectFit: 'contain',
-        }}
-        alt="Fullscreen image"
-        src={src}
-      />
-    </Box>
-  </Modal>
-);
+import ContainerPaper from "../../Components/GeneralComponents/ContainerPaper/ContainerPaper";
+import PageHeader from "../../Components/GeneralComponents/PageHeader/PageHeader";
+import FullScreenImage from "../../Components/GalleryComponents/FullScreenImage/FullScreenImage";
+import LoadingIcon from "../../Components/GeneralComponents/LoadingIcon/LoadingIcon";
 
 const Gallery: React.FC = () => {
   const [tabValue, setTabValue] = useState(0);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
@@ -77,6 +29,15 @@ const Gallery: React.FC = () => {
   const handleCloseFullscreen = () => {
     setSelectedImage(null);
   };
+
+  React.useEffect(() => {
+    setIsLoading(true);
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const images = [
     "https://picsum.photos/id/1018/1000/600/",
@@ -98,6 +59,10 @@ const Gallery: React.FC = () => {
     "https://vimeo.com/1084537",
     "https://www.youtube.com/watch?v=_OBlgSz8sSM",
   ];
+
+  if (isLoading) {
+    return <LoadingIcon />;
+  }
 
   return (
     <ContainerPaper>

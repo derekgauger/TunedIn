@@ -3,7 +3,7 @@ import { Box, Button, Link, TextField, Typography } from "@mui/material";
 import { Field, Form, Formik } from "formik";
 import { LoginSchema, ForgotPasswordSchema } from "../Validations";
 import PasswordField from "../Password/PasswordField";
-import ErrorMessage from "../../ErrorMessage/ErrorMessage";
+import ErrorMessage from "../../GeneralComponents/ErrorMessage/ErrorMessage";
 
 interface LoginFormProps {
   handleSubmit: (values: any, { setSubmitting }: any) => void;
@@ -24,13 +24,13 @@ const LoginForm: React.FC<LoginFormProps> = ({
   const toggleForgotPassword = () => {
     setIsForgotPassword(!isForgotPassword);
     setTriedSubmit(false);
-    setFormKey(prevKey => prevKey + 1);
+    setFormKey((prevKey) => prevKey + 1);
   };
 
   const handleClearForm = (resetForm: () => void) => {
     resetForm();
     setTriedSubmit(false);
-    setFormKey(prevKey => prevKey + 1);
+    setFormKey((prevKey) => prevKey + 1);
   };
 
   return (

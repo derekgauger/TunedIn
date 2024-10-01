@@ -18,7 +18,8 @@ import {
   Person as PersonIcon,
   KeyboardArrowUp as KeyboardArrowUpIcon,
 } from "@mui/icons-material";
-import { useUser } from "../../Hooks/useUser";
+import { useUser } from "../../../Hooks/useUser";
+import { scrollToTop } from "../../../Utils/functions";
 
 interface StyledAppBarProps {
   trigger: boolean;
@@ -66,10 +67,6 @@ const UserButton = styled(Button)(() => ({
   },
 }));
 
-const scrollToTop = () => {
-  window.scrollTo({ top: 0, behavior: "smooth" });
-};
-
 type NavItem = {
   name: string;
   path: string;
@@ -79,7 +76,7 @@ const navItems: NavItem[] = [
   { name: "Home", path: "/" },
   { name: "About", path: "/about" },
   { name: "Gallery", path: "/gallery" },
-  { name: "Shop", path: "/shop" },
+  { name: "Sevices", path: "/services" },
   { name: "Contact", path: "/contact" },
 ];
 
@@ -137,10 +134,10 @@ const Navbar: React.FC = () => {
 
   const handleLogout = () => {
     logout();
-    if (location.pathname === '/profile') {
-      navigate('/');
+    if (location.pathname === "/profile") {
+      navigate("/");
     }
-  }
+  };
 
   return (
     <>
@@ -149,7 +146,12 @@ const Navbar: React.FC = () => {
           <Container maxWidth="xl">
             <StyledToolbar disableGutters>
               <Box
-                sx={{ display: "flex", alignItems: "center", flexGrow: 1, cursor: "pointer" }}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  flexGrow: 1,
+                  cursor: "pointer",
+                }}
                 onClick={() => {
                   handleNavigation("/");
                 }}

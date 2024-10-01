@@ -1,7 +1,9 @@
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 using LoginSystem.Backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -11,8 +13,8 @@ namespace LoginSystem.Backend.Services
 {
     public interface IAuthService
     {
-        Task<bool> RegisterUser(string username, string email, string password, string firstName, string lastName, string phoneNumber);
-        Task<User> AuthenticateUser(string loginIdentifier, string password);
+        Task<(bool success, string message)> RegisterUser(string username, string email, string password, string firstName, string lastName, string phoneNumber);
+        Task<(User user, string message)> AuthenticateUser(string loginIdentifier, string password);
         string GenerateJwtToken(User user);
     }
 
@@ -27,8 +29,20 @@ namespace LoginSystem.Backend.Services
             _configuration = configuration;
         }
 
-        public async Task<bool> RegisterUser(string username, string email, string password, string firstName, string lastName, string phoneNumber)
+        public async Task<(bool success, string message)> RegisterUser(string username, string email, string password, string firstName, string lastName, string phoneNumber)
         {
+            // Check if username already exists
+            if (await _context.Users.AnyAsync(u => u.Username == username))
+            {
+                return (false, "Username already exists");
+            }
+
+            // Check if email already exists
+            if (await _context.Users.AnyAsync(u => u.Email == email))
+            {
+                return (false, "Email already exists");
+            }
+
             var salt = GenerateSalt();
             var passwordHash = HashPassword(password, salt);
 
@@ -43,22 +57,30 @@ namespace LoginSystem.Backend.Services
                 PhoneNumber = phoneNumber
             };
 
-            _context.Users.Add(user);
-            var result = await _context.SaveChangesAsync();
-            return result > 0;
+            try
+            {
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+                return (true, "User registered successfully");
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine($"Error registering user: {ex.Message}");
+                return (false, "An error occurred while registering the user");
+            }
         }
 
-        public async Task<User> AuthenticateUser(string loginIdentifier, string password)
+        public async Task<(User user, string message)> AuthenticateUser(string loginIdentifier, string password)
         {
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Username == loginIdentifier || u.Email == loginIdentifier);
 
-            if (user != null && VerifyPassword(password, user.Salt, user.PasswordHash))
+            if (user == null || !VerifyPassword(password, user.Salt, user.PasswordHash))
             {
-                return user;
+                return (null, "Incorrect username/email or password!");
             }
-
-            return null;
+            return (user, "Authentication successful");
         }
 
         public string GenerateJwtToken(User user)

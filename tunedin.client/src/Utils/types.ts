@@ -43,3 +43,12 @@ export type AboutFounderData = {
   image: string;
   journey: AboutListItemData[];
 };
+
+export type RedirectCardData = {
+  title: string;
+  description: string;
+  link: string;
+  buttonText: string;
+  icon: React.ElementType;
+  backgroundImage?: string;
+};

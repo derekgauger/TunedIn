@@ -11,8 +11,9 @@ import {
   Typography,
 } from "@mui/material";
 import { CheckIcon } from "lucide-react";
-import { Membership } from "../../Utils/types";
 import { useNavigate } from "react-router-dom";
+import { scrollToTop } from "../../../Utils/functions";
+import { Membership } from "../../../Utils/types";
 
 interface MembershipCardProps {
   option: Membership;
@@ -29,10 +30,6 @@ const MembershipCard: React.FC<MembershipCardProps> = ({
   const handleNavigation = (path: string | undefined) => {
     navigate(path ? path : "/", { state: { additionalData: option } });
     scrollToTop();
-  };
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -76,7 +73,7 @@ const MembershipCard: React.FC<MembershipCardProps> = ({
       {!isCurrent && (
         <CardActions>
           <Button
-          onClick={() => handleNavigation(`/shop/${option.title.replace(" ", '-').toLowerCase()}`)}
+          onClick={() => handleNavigation(`/services/${option.title.replace(" ", '-').toLowerCase()}`)}
             size="large"
             fullWidth
             variant="contained"

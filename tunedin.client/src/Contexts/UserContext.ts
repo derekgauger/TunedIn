@@ -3,7 +3,7 @@ import { User } from "../Utils/types";
 
 interface UserContextType {
   user: User | null;
-  login: (loginIdentifier: string, password: string) => void;
+  login: (loginIdentifier: string, password: string) => boolean;
   register: (
     firstName: string,
     lastName: string,
@@ -11,7 +11,7 @@ interface UserContextType {
     email: string,
     password: string,
     phoneNumber: string
-  ) => void;
+  ) => boolean;
   logout: () => void;
   queryUser: () => void;
 }

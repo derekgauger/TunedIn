@@ -1,7 +1,7 @@
 import { Box, Button, Paper, TextField, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { emailSchema } from "./validations";
-import ErrorMessage from "../../Components/ErrorMessage/ErrorMessage";
+import ErrorMessage from "../GeneralComponents/ErrorMessage/ErrorMessage";
 import { Field, Form, Formik, FormikHelpers } from "formik";
 
 interface ContactFormValues {
@@ -86,7 +86,7 @@ const EmailForm: React.FC = () => {
               />
               <ErrorMessage error={triedSubmit && errors.message} />
             </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+            <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
               <Button
                 type="submit"
                 onClick={() => setTriedSubmit(true)}

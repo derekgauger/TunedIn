@@ -6,8 +6,9 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import IconButton from "@mui/material/IconButton";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../Hooks/useUser";
-import BackgroundImage from "../BackgroundImage/BackgroundImage";
+import BackgroundImage from "../GeneralComponents/BackgroundImage/BackgroundImage";
 import { parsePhoneNumber } from "../../Utils/functions";
+import { enqueueSnackbar } from "notistack";
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -19,17 +20,15 @@ const Login = () => {
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       if (isLogin) {
-        const response = await login(values.loginIdentifier, values.password);
-        if (response.error) {
-          // Handle login error
-          console.error(response.error);
-          // Optionally, display an error message to the user
-          // setError(response.error);
-        } else {
+        const successfulLogin = await login(
+          values.loginIdentifier,
+          values.password
+        );
+        if (successfulLogin) {
           navigate("/");
         }
       } else {
-        const response = register(
+        const successfulRegister = await register(
           values.firstName,
           values.lastName,
           values.username,
@@ -37,20 +36,15 @@ const Login = () => {
           values.password,
           parsePhoneNumber(values.phoneNumber)
         );
-        if (response.error) {
-          // Handle registration error
-          console.error(response.error);
-          // Optionally, display an error message to the user
-          // setError(response.error);
-        } else {
+        if (successfulRegister) {
           toggleForm();
         }
       }
     } catch (error) {
-      // Handle unexpected errors
       console.error("An unexpected error occurred:", error);
-      // Optionally, display an error message to the user
-      // setError("An unexpected error occurred. Please try again.");
+      enqueueSnackbar("An unexpected error occurred. Please try again later.", {
+        variant: "error",
+      });
     } finally {
       setSubmitting(false);
     }

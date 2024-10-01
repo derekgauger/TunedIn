@@ -7,6 +7,7 @@ import {
   sendUserInfoRequest,
 } from "../Functions/users";
 import { getMembership } from "../Functions/memberships";
+import { enqueueSnackbar } from "notistack";
 
 interface UserProviderProps {
   children: ReactNode;
@@ -29,10 +30,24 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
   const login = async (loginIdentifier: string, password: string) => {
     const loginResponse = await sendLoginRequest(loginIdentifier, password);
+
+    if (loginResponse?.status !== 200) {
+      enqueueSnackbar(loginResponse?.data.message, {
+        variant: "error",
+      });
+      return false;
+    }
     const userInfoRequest = await sendUserInfoRequest();
+    if (userInfoRequest?.status !== 200) {
+      enqueueSnackbar(userInfoRequest?.data.message, {
+        variant: "error",
+      });
+      return false;
+    }
     const userData = userInfoRequest?.data;
     setUser(userData);
-    return loginResponse;
+    enqueueSnackbar(loginResponse?.data.message, { variant: "success" });
+    return true;
   };
 
   const register = async (
@@ -51,7 +66,16 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
       password,
       phoneNumber
     );
-    return registerResponse;
+    console.log("Register response:", registerResponse?.data.message);
+    if (registerResponse?.status !== 200) {
+      enqueueSnackbar(registerResponse?.data.message, {
+        variant: "error",
+      });
+      return false;
+    }
+
+    enqueueSnackbar(registerResponse?.data.message, { variant: "success" });
+    return true;
   };
 
   const queryUser = async () => {
@@ -71,6 +95,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     setUser(null);
     localStorage.removeItem("user");
     localStorage.removeItem("token");
+    enqueueSnackbar("Logout successful!", { variant: "info" });
   };
 
   return (

@@ -7,7 +7,7 @@ interface ContainerPaperProps {
 
 const ContainerPaper: React.FC<ContainerPaperProps> = ({ children }) => {
   return (
-    <Container maxWidth="lg" sx={{ mt: 12 }}>
+    <Container maxWidth="xl" sx={{ mt: 12 }}>
       <Box sx={{ my: 4 }}>
         <Paper elevation={3} sx={{ p: 4 }}>
           {children}

@@ -2,6 +2,7 @@ import { Box, Button, Container, Stack, Typography } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router";
 import { ArrowForward } from "@mui/icons-material";
+import { scrollToTop } from "../../../Utils/functions";
 
 const LandingScreen: React.FC = () => {
   const navigate = useNavigate();
@@ -9,10 +10,6 @@ const LandingScreen: React.FC = () => {
   const handleNavigation = (path: string) => {
     navigate(path);
     scrollToTop();
-  };
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -48,7 +45,7 @@ const LandingScreen: React.FC = () => {
             <Button
               type="submit"
               variant="contained"
-              onClick={() => handleNavigation("/shop")}
+              onClick={() => handleNavigation("/services")}
               sx={{
                 bgcolor: "primary.main",
                 "&:hover": { bgcolor: "primary.dark" },

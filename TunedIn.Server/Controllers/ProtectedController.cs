@@ -69,12 +69,6 @@ namespace LoginSystem.Backend.Controllers
                 return BadRequest("Invalid user ID format.");
             }
 
-            Console.WriteLine(userIdInt);
-            Console.WriteLine(updatedUser.Id);
-            Console.WriteLine(updatedUser.LastName);
-            Console.WriteLine(updatedUser.FirstName);
-            Console.WriteLine(updatedUser.PhoneNumber);
-            Console.WriteLine(updatedUser.Username);
             if (userIdInt != updatedUser.Id)
             {
                 return Forbid();
@@ -102,6 +96,39 @@ namespace LoginSystem.Backend.Controllers
             catch (DbUpdateException)
             {
                 return StatusCode(500, "An error occurred while updating the user.");
+            }
+        }
+
+        [HttpDelete("delete-account")]
+        public async Task<IActionResult> DeleteAccount()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized();
+            }
+
+            if (!int.TryParse(userId, out int userIdInt))
+            {
+                return BadRequest("Invalid user ID format.");
+            }
+
+            var user = await _context.Users.FindAsync(userIdInt);
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            _context.Users.Remove(user);
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                return Ok("User account deleted successfully.");
+            }
+            catch (DbUpdateException)
+            {
+                return StatusCode(500, "An error occurred while deleting the user account.");
             }
         }
 

@@ -27,45 +27,37 @@ namespace LoginSystem.Backend.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
-            if (await _authService.RegisterUser(model.Username, model.Email, model.Password, model.FirstName, model.LastName, model.PhoneNumber))
+            if (!ModelState.IsValid)
             {
-                return Ok(new { message = "User registered successfully" });
+                return BadRequest(ModelState);
             }
-            return BadRequest(new { message = "Registration failed" });
+
+            var (success, message) = await _authService.RegisterUser(model.Username, model.Email, model.Password, model.FirstName, model.LastName, model.PhoneNumber);
+
+            if (success)
+            {
+                return Ok(new { message });
+            }
+            return BadRequest(new { message });
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
-            var user = await _authService.AuthenticateUser(model.LoginIdentifier, model.Password);
-            if (user == null)
+            if (!ModelState.IsValid)
             {
-                return Unauthorized(new { message = "Username or password is incorrect" });
+                return BadRequest(ModelState);
             }
 
-            var token = GenerateJwtToken(user);
-            return Ok(new { token });
-        }
+            var (user, message) = await _authService.AuthenticateUser(model.LoginIdentifier, model.Password);
 
-        private string GenerateJwtToken(User user)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Secret"]);
-            var tokenDescriptor = new SecurityTokenDescriptor
+            if (user == null)
             {
-                Subject = new ClaimsIdentity(new[] 
-                {
-                    new Claim(ClaimTypes.Name, user.Username),
-                    new Claim(ClaimTypes.Email, user.Email),
-                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                    new Claim(ClaimTypes.GivenName, user.FirstName),
-                    new Claim(ClaimTypes.Surname, user.LastName)
-                }),
-                Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+                return Unauthorized(new { message });
+            }
+
+            var token = _authService.GenerateJwtToken(user);
+            return Ok(new { token, message });
         }
     }
 }

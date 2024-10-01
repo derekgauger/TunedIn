@@ -1,23 +1,21 @@
 import React from "react";
-import {
-  Grid,
-} from "@mui/material";
-import ContainerPaper from "../../Components/ContainerPaper/ContainerPaper";
-import PageHeader from "../../Components/PageHeader/PageHeader";
+import { Grid } from "@mui/material";
+import ContainerPaper from "../../Components/GeneralComponents/ContainerPaper/ContainerPaper";
+import PageHeader from "../../Components/GeneralComponents/PageHeader/PageHeader";
 import EmailForm from "../../Components/ContactPageSections/EmailForm";
 import ContactInfo from "../../Components/ContactPageSections/ContactInfo";
 
 const Contact: React.FC = () => {
   return (
     <ContainerPaper>
-      <PageHeader title="Contact Us"/>
+      <PageHeader title="Contact Us" />
 
       <Grid container spacing={3}>
         <Grid item xs={12} md={8}>
-          <EmailForm/>
+          <EmailForm />
         </Grid>
         <Grid item xs={12} md={4}>
-          <ContactInfo/>
+          <ContactInfo />
         </Grid>
       </Grid>
     </ContainerPaper>
