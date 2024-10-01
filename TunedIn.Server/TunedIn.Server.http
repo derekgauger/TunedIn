@@ -1,0 +1,6 @@
+@TunedIn.Server_HostAddress = http://localhost:5180
+
+GET {{TunedIn.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

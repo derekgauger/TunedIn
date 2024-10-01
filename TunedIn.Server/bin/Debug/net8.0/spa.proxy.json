@@ -1,0 +1,10 @@
+{
+"SpaProxyServer": {
+"ServerUrl": "https://localhost:5173",
+"RedirectUrl": "",
+"LaunchCommand": "npm run dev",
+"WorkingDirectory": "C:\\Users\\Derek\\source\\repos\\TunedIn\\TunedIn.Server\\..\\tunedin.client",
+"MaxTimeoutInSeconds": "120",
+"KeepRunning": "false"
+}
+}

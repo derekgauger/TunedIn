@@ -1,0 +1,23 @@
+{
+  "Version": 1,
+  "Hash": "7ilgo0/LP3OdAEg2RHaGnAvKZMoj+c5C9dC/Bk5V3Bw=",
+  "Source": "TunedIn.Server",
+  "BasePath": "_content/TunedIn.Server",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [
+    {
+      "Identity": "C:\\Users\\Derek\\source\\repos\\TunedIn\\tunedin.client\\tunedin.client.esproj",
+      "Version": 2,
+      "Source": "tunedin.client",
+      "GetPublishAssetsTargets": "GetCurrentProjectPublishStaticWebAssetItems",
+      "AdditionalPublishProperties": "",
+      "AdditionalPublishPropertiesToRemove": "WebPublishProfileFile;TargetFramework;RuntimeIdentifier;SelfContained",
+      "GetBuildAssetsTargets": "GetCurrentProjectBuildStaticWebAssetItems",
+      "AdditionalBuildProperties": "",
+      "AdditionalBuildPropertiesToRemove": "WebPublishProfileFile;TargetFramework;RuntimeIdentifier;SelfContained"
+    }
+  ],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
