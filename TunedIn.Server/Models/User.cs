@@ -1,6 +1,3 @@
-using System;
-using System.ComponentModel.DataAnnotations;
-
 namespace LoginSystem.Backend.Models
 {
     public class User
@@ -16,6 +13,7 @@ namespace LoginSystem.Backend.Models
         public string PhoneNumber { get; set; } = string.Empty;
         public string Goal { get; set; } = "I want to get fit!";
         public string Membership { get; set; } = "None";
+        public Boolean IsAdmin { get; set; } = false;
     }
 
     public class RegisterModel
@@ -43,5 +41,11 @@ namespace LoginSystem.Backend.Models
         public string LastName { get; set; } = string.Empty;
         public string PhoneNumber { get; set; } = string.Empty;
         public string Goal { get; set; } = string.Empty;
+        // public bool EmailNotifications { get; set; } = true;
+        // public bool SMSNotifications { get; set; } = true;
+        // public bool ServiceUpdateNotifications { get; set; } = true;
+        // public bool NewsLetterNotifications { get; set; } = true;
+        // public bool MarketingNotifications { get; set; } = true;
+        // public bool SecurityAlertNotifications { get; set; } = true;
     }
 }

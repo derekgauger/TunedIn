@@ -14,6 +14,7 @@ import { CheckIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { scrollToTop } from "../../../Utils/functions";
 import { Membership } from "../../../Utils/types";
+import CustomTypography from "../../CustomUI/CustomTypography";
 
 interface MembershipCardProps {
   option: Membership;
@@ -24,7 +25,6 @@ const MembershipCard: React.FC<MembershipCardProps> = ({
   option,
   isCurrent,
 }) => {
-
   const navigate = useNavigate();
 
   const handleNavigation = (path: string | undefined) => {
@@ -48,24 +48,59 @@ const MembershipCard: React.FC<MembershipCardProps> = ({
         alt={`${option.title} image`}
       />
       <CardContent sx={{ flexGrow: 1 }}>
-        <Typography
-          gutterBottom
-          variant="h5"
-          component="h2"
-          sx={{ color: option.color, fontWeight: "bold" }}
+        <CustomTypography
+          bold
+          size={"xl"}
+          fontSizeOverrides={{
+            xs: "xl",
+            sm: "xl",
+            md: "xl",
+            lg: "xl",
+            xl: "xl",
+            "2xl": "2xl",
+          }}
+          color={option.color}
         >
           {option.title}
-        </Typography>
-        <Typography variant="h6" color="text.secondary" sx={{ mb: 2 }}>
+        </CustomTypography>
+        <CustomTypography
+          size={"md"}
+          fontSizeOverrides={{
+            xs: "md",
+            sm: "md",
+            md: "md",
+            lg: "md",
+            xl: "md",
+            "2xl": "lg",
+          }}
+          color="text.secondary"
+        >
           {option.price}
-        </Typography>
+        </CustomTypography>
         <List>
           {option.features.map((feature, index) => (
             <ListItem key={index} disablePadding>
               <ListItemIcon sx={{ color: "primary.main" }}>
                 <CheckIcon className={`text-[${option.color}]`} />
               </ListItemIcon>
-              <ListItemText primary={feature} />
+              <ListItemText
+                primary={
+                  <CustomTypography
+                    size={"md"}
+                    fontSizeOverrides={{
+                      xs: "md",
+                      sm: "md",
+                      md: "md",
+                      lg: "md",
+                      xl: "md",
+                      "2xl": "lg",
+                    }}
+                    color="text.secondary"
+                  >
+                    {feature}
+                  </CustomTypography>
+                }
+              />
             </ListItem>
           ))}
         </List>
@@ -73,7 +108,11 @@ const MembershipCard: React.FC<MembershipCardProps> = ({
       {!isCurrent && (
         <CardActions>
           <Button
-          onClick={() => handleNavigation(`/services/${option.title.replace(" ", '-').toLowerCase()}`)}
+            onClick={() =>
+              handleNavigation(
+                `/services/${option.title.replace(" ", "-").toLowerCase()}`
+              )
+            }
             size="large"
             fullWidth
             variant="contained"

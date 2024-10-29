@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  Typography,
   Grid,
   Paper,
   List,
@@ -14,6 +13,7 @@ import PageHeader from "../../Components/GeneralComponents/PageHeader/PageHeader
 import { AboutListItemData, AboutSectionData } from "../../Utils/types";
 import CompanyInfo from "../../Components/AboutComponents/CompanyInfo";
 import FounderInfo from "../../Components/AboutComponents/FounderInfo";
+import GenericSectionText from "../../Components/GeneralComponents/GenericSectionText";
 
 const mission: AboutSectionData = {
   title: "Our Mission",
@@ -65,7 +65,20 @@ const About: React.FC = () => {
           <ListItemIcon sx={{ color: "primary.main" }}>
             {item.icon}
           </ListItemIcon>
-          <ListItemText primary={item.primary} secondary={item.secondary} />
+          <ListItemText
+            primary={
+              <GenericSectionText
+                text={item.primary}
+                type={"BulletHeader"}
+              ></GenericSectionText>
+            }
+            secondary={
+              <GenericSectionText
+                text={item.secondary}
+                type={"BulletDescription"}
+              ></GenericSectionText>
+            }
+          />
         </ListItem>
       ))}
     </List>
@@ -74,12 +87,14 @@ const About: React.FC = () => {
   const renderSection = (section: AboutSectionData) => (
     <Grid item xs={12} key={section.title}>
       <Paper elevation={3} sx={{ p: 2 }}>
-        <Typography variant="h5" component="h2" gutterBottom>
-          {section.title}
-        </Typography>
-        <Typography variant="body1" paragraph>
-          {section.content}
-        </Typography>
+        <GenericSectionText
+          text={section.title}
+          type={"Header"}
+        ></GenericSectionText>
+        <GenericSectionText
+          text={section.content}
+          type={"Description"}
+        ></GenericSectionText>
         {section.listItems && renderListItems(section.listItems)}
       </Paper>
     </Grid>

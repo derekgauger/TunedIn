@@ -1,16 +1,7 @@
 import { Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormGroup, Typography } from '@mui/material';
 import React, { useState } from 'react';
+import { notificationTypes } from './constants';
 
-const notificationTypes = [
-  { id: 'email', label: 'Email Notifications' },
-  { id: 'push', label: 'Push Notifications' },
-  { id: 'sms', label: 'SMS Notifications' },
-  { id: 'inApp', label: 'In-App Notifications' },
-  { id: 'updates', label: 'Product Updates' },
-  { id: 'newsletter', label: 'Newsletter' },
-  { id: 'marketing', label: 'Marketing Communications' },
-  { id: 'security', label: 'Security Alerts' },
-];
 
 interface NotificationPreferencesModalProps {
   open: boolean;
@@ -42,19 +33,25 @@ const NotificationPreferencesModal: React.FC<NotificationPreferencesModalProps> 
           Choose the types of notifications you'd like to receive:
         </Typography>
         <FormGroup>
-          {notificationTypes.map(({ id, label }) => (
-            <FormControlLabel
-              key={id}
+            {notificationTypes.map(({ id, label, description }) => (
+            <div key={id} className='mb-2'>
+              <FormControlLabel
               control={
                 <Checkbox
-                  checked={!!preferences[id]}
-                  onChange={() => handlePreferenceChange(id)}
-                  name={id}
+                checked={!!preferences[id]}
+                onChange={() => handlePreferenceChange(id)}
+                name={id}
                 />
               }
               label={label}
-            />
-          ))}
+              />
+              {description && (
+              <Typography variant="body2" color="textSecondary" style={{ marginLeft: 32 }}>
+                {description}
+              </Typography>
+              )}
+            </div>
+            ))}
         </FormGroup>
       </DialogContent>
       <DialogActions>

@@ -1,14 +1,13 @@
 import { useState } from "react";
-import { Button, Typography, Box, Paper } from "@mui/material";
+import { Box, Paper } from "@mui/material";
 import LoginForm from "./LoginForm/LoginForm";
 import RegisterForm from "./RegisterForm/RegisterForm";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import IconButton from "@mui/material/IconButton";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../Hooks/useUser";
 import BackgroundImage from "../GeneralComponents/BackgroundImage/BackgroundImage";
 import { parsePhoneNumber } from "../../Utils/functions";
-import { enqueueSnackbar } from "notistack";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import SlidingAlternativeOptionBox from "./SlidingAlternativeOptionBox";
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -16,38 +15,31 @@ const Login = () => {
   const { login, register } = useUser();
 
   const navigate = useNavigate();
+  const isMobile = useMediaQuery("(max-width:1050px)");
 
-  const handleSubmit = async (values, { setSubmitting }) => {
-    try {
-      if (isLogin) {
-        const successfulLogin = await login(
-          values.loginIdentifier,
-          values.password
-        );
-        if (successfulLogin) {
-          navigate("/");
-        }
-      } else {
-        const successfulRegister = await register(
-          values.firstName,
-          values.lastName,
-          values.username,
-          values.email,
-          values.password,
-          parsePhoneNumber(values.phoneNumber)
-        );
-        if (successfulRegister) {
-          toggleForm();
-        }
+  const handleSubmit = async (values: any, { setSubmitting }: any) => {
+    if (isLogin) {
+      const successfulLogin = await login(
+        values.loginIdentifier,
+        values.password
+      );
+      if (successfulLogin) {
+        navigate("/");
       }
-    } catch (error) {
-      console.error("An unexpected error occurred:", error);
-      enqueueSnackbar("An unexpected error occurred. Please try again later.", {
-        variant: "error",
-      });
-    } finally {
-      setSubmitting(false);
+    } else {
+      const successfulRegister = await register(
+        values.firstName,
+        values.lastName,
+        values.username,
+        values.email,
+        values.password,
+        parsePhoneNumber(values.phoneNumber)
+      );
+      if (successfulRegister) {
+        toggleForm();
+      }
     }
+    setSubmitting(false);
   };
 
   const handleForgotPassword = async (values: any, { setSubmitting }: any) => {
@@ -85,54 +77,50 @@ const Login = () => {
           position: "relative",
         }}
       >
-        <Box
-          sx={{
-            position: "absolute",
-            top: 0,
-            left: isLogin ? "50%" : "0%",
-            width: "50%",
-            height: "100%",
-            transition: "left 0.2s ease-in-out",
-            bgcolor: "primary.main",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            color: "white",
-            zIndex: 2,
-          }}
-        >
-          <Typography variant="h4" component="h2" gutterBottom align="center">
-            {isLogin ? "Welcome Back!" : "Welcome!"}
-          </Typography>
-          <Typography variant="body1" align="center" sx={{ mb: 2 }}>
-            {isLogin ? "Don't have an account?" : "Already have an account?"}
-          </Typography>
-          <Button variant="outlined" color="inherit" onClick={toggleForm}>
-            {isLogin ? "Sign Up" : "Sign In"}
-          </Button>
-          <IconButton
-            color="inherit"
-            onClick={() => navigate("/")}
-            sx={{ position: "absolute", top: 16, left: 16 }}
-          >
-            <ArrowBackIcon />
-            <Typography variant="body2" sx={{ ml: 1 }}>
-              Back to site
-            </Typography>
-          </IconButton>
-        </Box>
-        <LoginForm
-          handleSubmit={handleSubmit}
-          triedSubmit={triedSubmit}
-          setTriedSubmit={setTriedSubmit}
-          handleForgotPassword={handleForgotPassword}
-        />
-        <RegisterForm
-          handleSubmit={handleSubmit}
-          triedSubmit={triedSubmit}
-          setTriedSubmit={setTriedSubmit}
-        />
+        {!isMobile ? (
+          <div>
+            <SlidingAlternativeOptionBox
+              isLogin={isLogin}
+              toggleForm={toggleForm}
+            />
+            <LoginForm
+              handleSubmit={handleSubmit}
+              triedSubmit={triedSubmit}
+              setTriedSubmit={setTriedSubmit}
+              handleForgotPassword={handleForgotPassword}
+              isMobile={isMobile}
+              toggleForm={toggleForm}
+            />
+            <RegisterForm
+              handleSubmit={handleSubmit}
+              triedSubmit={triedSubmit}
+              setTriedSubmit={setTriedSubmit}
+              isMobile={isMobile}
+              toggleForm={toggleForm}
+            />
+          </div>
+        ) : (
+          <div>
+            {isLogin ? (
+              <LoginForm
+                handleSubmit={handleSubmit}
+                triedSubmit={triedSubmit}
+                setTriedSubmit={setTriedSubmit}
+                handleForgotPassword={handleForgotPassword}
+                isMobile={isMobile}
+                toggleForm={toggleForm}
+              />
+            ) : (
+              <RegisterForm
+                handleSubmit={handleSubmit}
+                triedSubmit={triedSubmit}
+                setTriedSubmit={setTriedSubmit}
+                isMobile={isMobile}
+                toggleForm={toggleForm}
+              />
+            )}
+          </div>
+        )}
       </Paper>
     </Box>
   );

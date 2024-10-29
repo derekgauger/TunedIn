@@ -1,9 +1,7 @@
 import { Paper, Typography } from "@mui/material";
 import React from "react";
 
-interface BillingInfoProps {}
-
-const BillingInfo: React.FC<BillingInfoProps> = () => {
+const BillingInfo: React.FC = () => {
   return (
     <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
       <Typography variant="h6" gutterBottom>

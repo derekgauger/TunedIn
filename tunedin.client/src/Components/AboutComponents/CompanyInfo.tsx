@@ -1,11 +1,12 @@
-import { Avatar, Paper, Typography, Box } from "@mui/material";
+import { Avatar, Paper, Box } from "@mui/material";
 import React from "react";
 import { AboutCompanyInfoData } from "../../Utils/types";
+import GenericSectionText from "../GeneralComponents/GenericSectionText";
 
 const CompanyInfo: React.FC = () => {
   const companyInfo: AboutCompanyInfoData = {
     logo: "/logo.png",
-    name: "Our Company",
+    name: "The Company",
     description:
       "We are a passionate team dedicated to creating innovative solutions for our clients.",
   };
@@ -35,12 +36,17 @@ const CompanyInfo: React.FC = () => {
           alt="Company Logo"
           src={companyInfo.logo}
         />
-        <Typography variant="h5" component="h2" gutterBottom align="center">
-          {companyInfo.name}
-        </Typography>
-        <Typography variant="body1" align="center">
-          {companyInfo.description}
-        </Typography>
+        <GenericSectionText
+          text={companyInfo.name}
+          type={"Header"}
+          alignment="center"
+          className="mb-2"
+        />
+        <GenericSectionText
+          text={companyInfo.description}
+          alignment="center"
+          type="Description"
+        />
       </Box>
     </Paper>
   );

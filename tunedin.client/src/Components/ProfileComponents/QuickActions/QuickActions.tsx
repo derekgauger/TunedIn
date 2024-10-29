@@ -6,6 +6,7 @@ import {
   Lock,
   Delete,
 } from "@mui/icons-material";
+import GenericSectionText from "../../GeneralComponents/GenericSectionText";
 
 const QuickActionButton = styled(Button)(({ theme }) => ({
   marginBottom: theme.spacing(1),
@@ -25,13 +26,12 @@ const QuickActions: React.FC<QuickActionsProps> = ({
 }) => {
   return (
     <Paper elevation={3} sx={{ p: 3 }}>
-      <Typography variant="h6" gutterBottom>
-        Quick Actions
-      </Typography>
+      <GenericSectionText text="Quick Actions" type="Header" />
       <QuickActionButton
         variant="outlined"
         color="primary"
         startIcon={<CreditCard />}
+        sx={{ mt: 2 }}
       >
         Change Membership
       </QuickActionButton>

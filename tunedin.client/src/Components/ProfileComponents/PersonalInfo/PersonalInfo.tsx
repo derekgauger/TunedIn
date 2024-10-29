@@ -1,12 +1,10 @@
-import { Avatar, Box, Button, Paper, Typography } from "@mui/material";
+import { Avatar, Box, Button, Paper } from "@mui/material";
 import React from "react";
 import { useUser } from "../../../Hooks/useUser";
 import { enqueueSnackbar } from "notistack";
+import GenericSectionText from "../../GeneralComponents/GenericSectionText";
 
-interface PersonalInfoProps {
-}
-
-const PersonalInfo: React.FC<PersonalInfoProps> = () => {
+const PersonalInfo: React.FC = () => {
   const { user } = useUser();
 
   return (
@@ -26,18 +24,26 @@ const PersonalInfo: React.FC<PersonalInfoProps> = () => {
         />
         <Button variant="outlined" component="label" sx={{ mb: 2 }}>
           Upload Picture
-          <input type="none" hidden onClick={() => enqueueSnackbar("These feature is currently not supported yet.", { variant: 'error' })}/>
+          <input
+            type="none"
+            hidden
+            onClick={() =>
+              enqueueSnackbar("These feature is currently not supported yet.", {
+                variant: "error",
+              })
+            }
+          />
         </Button>
       </Box>
-      <Typography variant="h5" gutterBottom>
+      <GenericSectionText type="Header">
         {user?.firstName} {user?.lastName}
-      </Typography>
-      <Typography variant="body2" color="text.secondary" gutterBottom>
+      </GenericSectionText>
+      <GenericSectionText type="AccordionBulletDescription">
         Member since: {user?.createdAt}
-      </Typography>
-      <Typography variant="body1" paragraph>
+      </GenericSectionText>
+      <GenericSectionText type="Description" className="break-all">
         Goal: {user?.goal ? user?.goal : "No goal set"}
-      </Typography>
+      </GenericSectionText>
     </Paper>
   );
 };

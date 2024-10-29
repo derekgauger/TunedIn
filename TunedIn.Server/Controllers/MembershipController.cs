@@ -28,7 +28,7 @@ namespace TunedIn.Server.Controllers
             var membership = await _membershipService.GetMembershipByTitleAsync(title);
             if (membership == null)
             {
-                return NotFound();
+                return NotFound("Membership not found");
             }
             return Ok(membership);
         }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import { Grid } from "@mui/material";
 import ContainerPaper from "../../Components/GeneralComponents/ContainerPaper/ContainerPaper";
@@ -25,7 +26,7 @@ const Store: React.FC = () => {
             { variant: "error" }
           );
         }
-      } catch (error) {
+      } catch {
         enqueueSnackbar(
           "Failed to get memberships. Try reloading the page. If that doesn't work, contact us!",
           { variant: "error" }
@@ -49,7 +50,13 @@ const Store: React.FC = () => {
       />
       <Grid container spacing={4}>
         {membershipOptions.map((option, index) => (
-          <Grid item key={index} xs={12} sm={6} md={4}>
+          <Grid
+            item
+            key={index}
+            xs={12}
+            sm={6}
+            md={4}
+          >
             <MembershipCard option={option} />
           </Grid>
         ))}

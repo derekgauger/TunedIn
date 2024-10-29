@@ -1,26 +1,26 @@
-import { createTheme } from '@mui/material/styles';
+import { createTheme } from "@mui/material/styles";
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#c3423f',
-      light: '#d24e4b',
-      dark: '#b13a37',
+      // main: "#8d1094", // Purple
+      // light: "#a51aa6",
+      // dark: "#6c0e6f",
+      // main: "#1e88e5", // Blue
+      // light: "#4fb3f6",
+      // dark: "#005cb2",
+      main: "#c3423f", // Red
+      light: "#d24e4b",
+      dark: "#b13a37",
     },
     secondary: {
-      main: '#1db8ad',
-      light: '#1fc2b9',
-      dark: '#1aa49f',
+      main: "#0D1821",
+      light: "#1a2630",
+      dark: "#000000",
     },
     background: {
-      default: '#f5f5f5',
-      paper: '#ffffff',
-    },
-  },
-  typography: {
-    fontFamily: 'Trebuchet MS, sans-serif',
-    h5: {
-      fontWeight: 600,
+      default: "#f5f5f5",
+      paper: "#ffffff",
     },
   },
   components: {
@@ -28,7 +28,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 0,
-          textTransform: 'none',
+          textTransform: "none",
         },
       },
     },
@@ -42,7 +42,7 @@ const theme = createTheme({
     MuiTextField: {
       styleOverrides: {
         root: {
-          '& .MuiInputBase-root': {
+          "& .MuiInputBase-root": {
             borderRadius: 0,
           },
         },

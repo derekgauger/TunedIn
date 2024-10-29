@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import GenericTextField from "../../GeneralComponents/GenericTextField";
 
 
 interface PasswordFieldProps {
@@ -21,7 +22,7 @@ const PasswordField : React.FC<PasswordFieldProps> = ({ field, ...props }) => {
   };
 
   return (
-    <TextField
+    <GenericTextField
       {...field}
       {...props}
       type={showPassword ? 'text' : 'password'}

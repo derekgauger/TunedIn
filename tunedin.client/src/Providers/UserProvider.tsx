@@ -8,6 +8,7 @@ import {
 } from "../Functions/users";
 import { getMembership } from "../Functions/memberships";
 import { enqueueSnackbar } from "notistack";
+import { checkTokenExpired } from "../Utils/functions";
 
 interface UserProviderProps {
   children: ReactNode;
@@ -17,13 +18,17 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (error) {
-        console.error("Error parsing stored user:", error);
-        localStorage.removeItem("user");
+    if (checkTokenExpired()) {
+      logout(true);
+    } else {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        try {
+          setUser(JSON.parse(storedUser));
+        } catch (error) {
+          console.error("Error parsing stored user:", error);
+          localStorage.removeItem("user");
+        }
       }
     }
   }, []);
@@ -66,7 +71,6 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
       password,
       phoneNumber
     );
-    console.log("Register response:", registerResponse?.data.message);
     if (registerResponse?.status !== 200) {
       enqueueSnackbar(registerResponse?.data.message, {
         variant: "error",
@@ -79,6 +83,10 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   };
 
   const queryUser = async () => {
+    if (checkTokenExpired()) {
+      logout(true);
+      return false;
+    }
     const userInfoRequest = await sendUserInfoRequest();
     const userData = userInfoRequest?.data;
     const membershipData = await getMembership(userData?.membership);
@@ -89,13 +97,22 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
         membershipData: membershipData?.data,
       };
     });
+    return true;
   };
 
-  const logout = () => {
+  const logout = (fromTokenExpired = false) => {
     setUser(null);
     localStorage.removeItem("user");
     localStorage.removeItem("token");
-    enqueueSnackbar("Logout successful!", { variant: "info" });
+    if (!fromTokenExpired) {
+      enqueueSnackbar("You have been logged out.", {
+        variant: "info",
+      });
+    } else {
+      enqueueSnackbar("Session expired. Please log in again.", {
+        variant: "info",
+      });
+    }
   };
 
   return (

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { enqueueSnackbar } from "notistack";
 import api from "../Utils/api";
 
@@ -12,7 +13,7 @@ export const sendLoginRequest = async (
     });
     localStorage.setItem("token", response.data.token);
     return response;
-  } catch (error) {
+  } catch (error: any) {
     enqueueSnackbar(error.response.data.message, {
       variant: "error",
     });
@@ -37,7 +38,18 @@ export const sendRegisterRequest = async (
       phoneNumber,
     });
     return response;
-  } catch (error) {
+  } catch (error: any) {
+    enqueueSnackbar(error.response.data.message, {
+      variant: "error",
+    });
+  }
+};
+
+export const sendGetAllUsers = async () => {
+  try {
+    const response = await api.get("/protected/all-users");
+    return response;
+  } catch (error: any) {
     enqueueSnackbar(error.response.data.message, {
       variant: "error",
     });
@@ -48,13 +60,25 @@ export const sendUserInfoRequest = async () => {
   try {
     const token = localStorage.getItem("token");
     if (!token) {
-      console.error("Use token not found. Try logging in again.");
+      console.error("User token not found. Try logging in again.");
+      return;
+    }
+
+    // Decode the token to check its expiration
+    const tokenPayload = JSON.parse(atob(token.split(".")[1]));
+    const isTokenExpired = tokenPayload.exp * 1000 < Date.now();
+    if (isTokenExpired) {
+      console.error("Token has expired. Please log in again.");
+      enqueueSnackbar("Session expired. Please log in again.", {
+        variant: "error",
+      });
+      localStorage.removeItem("token");
       return;
     }
     const response = await api.get("/protected/user-info");
     localStorage.setItem("user", JSON.stringify(response.data));
     return response;
-  } catch (error) {
+  } catch (error: any) {
     enqueueSnackbar(error.response.data.message, {
       variant: "error",
     });
@@ -87,7 +111,7 @@ export const sendUserUpdateRequest = async (
     });
     localStorage.setItem("user", JSON.stringify(response.data));
     return response;
-  } catch (error) {
+  } catch (error: any) {
     enqueueSnackbar(error.response.data.message, {
       variant: "error",
     });
@@ -103,7 +127,7 @@ export const sendUserDeleteRequest = async () => {
     }
     const response = await api.delete("/protected/delete-account");
     return response;
-  } catch (error) {
+  } catch (error: any) {
     enqueueSnackbar(error.response.data.message, {
       variant: "error",
     });

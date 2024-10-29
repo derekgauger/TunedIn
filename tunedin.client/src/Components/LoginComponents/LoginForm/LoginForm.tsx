@@ -1,15 +1,21 @@
 import React, { useState } from "react";
-import { Box, Button, Link, TextField, Typography } from "@mui/material";
+import { Box, Button, IconButton, Link, Typography } from "@mui/material";
 import { Field, Form, Formik } from "formik";
 import { LoginSchema, ForgotPasswordSchema } from "../Validations";
 import PasswordField from "../Password/PasswordField";
 import ErrorMessage from "../../GeneralComponents/ErrorMessage/ErrorMessage";
+import GenericTextField from "../../GeneralComponents/GenericTextField";
+import CustomTypography from "../../CustomUI/CustomTypography";
+import { useNavigate } from "react-router";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 interface LoginFormProps {
   handleSubmit: (values: any, { setSubmitting }: any) => void;
   handleForgotPassword: (values: any, { setSubmitting }: any) => void;
   triedSubmit: boolean;
   setTriedSubmit: any;
+  isMobile: boolean;
+  toggleForm: () => void;
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({
@@ -17,9 +23,12 @@ const LoginForm: React.FC<LoginFormProps> = ({
   handleForgotPassword,
   triedSubmit,
   setTriedSubmit,
+  isMobile,
+  toggleForm,
 }) => {
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [formKey, setFormKey] = useState(0);
+  const navigate = useNavigate();
 
   const toggleForgotPassword = () => {
     setIsForgotPassword(!isForgotPassword);
@@ -39,7 +48,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
         position: "absolute",
         top: 0,
         left: 0,
-        width: "50%",
+        width: isMobile ? "100%" : "50%",
         height: "100%",
         transition: "left 0.2s ease-in-out",
         overflowY: "auto",
@@ -57,9 +66,36 @@ const LoginForm: React.FC<LoginFormProps> = ({
           minHeight: "100%",
         }}
       >
-        <Typography variant="h4" component="h1" gutterBottom align="center">
+        {isMobile && (
+          <IconButton
+            onClick={() => navigate("/")}
+            sx={{
+              position: "absolute",
+              top: 16,
+              left: 16,
+              color: "primary.main",
+            }}
+          >
+            <ArrowBackIcon />
+            <Typography variant="body2" sx={{ ml: 1 }}>
+              Back to site
+            </Typography>
+          </IconButton>
+        )}
+        <CustomTypography
+          size={"3xl"}
+          className="text-center mb-4"
+          fontSizeOverrides={{
+            xs: "3xl",
+            sm: "3xl",
+            md: "3xl",
+            lg: "3xl",
+            xl: "3xl",
+            "2xl": "3xl",
+          }}
+        >
           {isForgotPassword ? "Forgot Password" : "Sign In"}
-        </Typography>
+        </CustomTypography>
         <Formik
           key={formKey}
           initialValues={
@@ -77,7 +113,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
               {isForgotPassword ? (
                 <>
                   <Field
-                    as={TextField}
+                    as={GenericTextField}
                     name="email"
                     label="Email"
                     fullWidth
@@ -88,7 +124,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
               ) : (
                 <>
                   <Field
-                    as={TextField}
+                    as={GenericTextField}
                     name="loginIdentifier"
                     label="Email or Username"
                     fullWidth
@@ -143,14 +179,33 @@ const LoginForm: React.FC<LoginFormProps> = ({
             </Form>
           )}
         </Formik>
-        <Link
-          component="button"
-          variant="body2"
-          onClick={toggleForgotPassword}
-          sx={{ mt: 2, alignSelf: "flex-start" }}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            mt: 2,
+            flexWrap: "wrap",
+          }}
         >
-          {isForgotPassword ? "Back to Sign In" : "Forgot Password?"}
-        </Link>
+          <Link
+            component="button"
+            variant="body2"
+            onClick={toggleForgotPassword}
+            sx={{ alignSelf: "flex-start" }}
+          >
+            {isForgotPassword ? "Back to Sign In" : "Forgot Password?"}
+          </Link>
+          {isMobile && (
+            <Link
+              component="button"
+              variant="body2"
+              onClick={toggleForm}
+              sx={{ alignSelf: "flex-end" }}
+            >
+              Don't have an account?
+            </Link>
+          )}
+        </Box>
       </Box>
     </Box>
   );

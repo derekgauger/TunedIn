@@ -9,10 +9,11 @@ import { accountInfoSchema } from "./validations";
 import { sendUserUpdateRequest } from "../../../Functions/users";
 import { parsePhoneNumber } from "../../../Utils/functions";
 import { Save } from "@mui/icons-material";
+import GenericTextField from "../../GeneralComponents/GenericTextField";
+import GenericSectionText from "../../GeneralComponents/GenericSectionText";
 
-interface AccountInfoFormProps {}
 
-const AccountInfoForm: React.FC<AccountInfoFormProps> = () => {
+const AccountInfoForm: React.FC = () => {
   const { user, queryUser } = useUser();
 
   const handleSaveChanges = async (
@@ -58,14 +59,12 @@ const AccountInfoForm: React.FC<AccountInfoFormProps> = () => {
       >
         {({ values, errors, touched, isValid, dirty }) => (
           <Form>
-            <Typography variant="h6" gutterBottom>
-              Account Information
-            </Typography>
-            <Grid container spacing={1}>
+            <GenericSectionText text="Account Information" type="Header" />
+            <Grid container spacing={1} mt={2}>
               <Grid item xs={12} sm={6}>
                 <Box>
                   <Field
-                    as={TextField}
+                    as={GenericTextField}
                     fullWidth
                     name="firstName"
                     label="First Name"
@@ -77,7 +76,7 @@ const AccountInfoForm: React.FC<AccountInfoFormProps> = () => {
               <Grid item xs={12} sm={6}>
                 <Box>
                   <Field
-                    as={TextField}
+                    as={GenericTextField}
                     fullWidth
                     name="lastName"
                     label="Last Name"
@@ -89,7 +88,7 @@ const AccountInfoForm: React.FC<AccountInfoFormProps> = () => {
               <Grid item xs={12}>
                 <Box>
                   <Field
-                    as={TextField}
+                    as={GenericTextField}
                     fullWidth
                     name="username"
                     label="Username"
@@ -101,7 +100,7 @@ const AccountInfoForm: React.FC<AccountInfoFormProps> = () => {
               <Grid item xs={12}>
                 <Box>
                   <Field
-                    as={TextField}
+                    as={GenericTextField}
                     fullWidth
                     name="email"
                     label="Email"
@@ -117,7 +116,7 @@ const AccountInfoForm: React.FC<AccountInfoFormProps> = () => {
                     {({ field }) => (
                       <InputMask {...field} mask="(999) 999-9999" maskChar="">
                         {(inputProps) => (
-                          <TextField
+                          <GenericTextField
                             {...inputProps}
                             type="tel"
                             label="Phone Number"
@@ -136,7 +135,7 @@ const AccountInfoForm: React.FC<AccountInfoFormProps> = () => {
               <Grid item xs={12}>
                 <Box>
                   <Field
-                    as={TextField}
+                    as={GenericTextField}
                     fullWidth
                     name="goal"
                     label="Fitness Goal"

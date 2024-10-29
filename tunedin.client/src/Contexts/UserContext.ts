@@ -3,7 +3,7 @@ import { User } from "../Utils/types";
 
 interface UserContextType {
   user: User | null;
-  login: (loginIdentifier: string, password: string) => boolean;
+  login: (loginIdentifier: string, password: string) => Promise<boolean>;
   register: (
     firstName: string,
     lastName: string,
@@ -11,9 +11,9 @@ interface UserContextType {
     email: string,
     password: string,
     phoneNumber: string
-  ) => boolean;
+  ) => Promise<boolean>;
   logout: () => void;
-  queryUser: () => void;
+  queryUser: () => Promise<boolean>;
 }
 
 const userContext = createContext<UserContextType | undefined>(undefined);

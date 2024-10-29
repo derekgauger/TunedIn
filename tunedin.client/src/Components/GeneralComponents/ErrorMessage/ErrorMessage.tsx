@@ -1,6 +1,6 @@
 import { Typography } from "@mui/material";
 
-const ErrorMessage: React.FC<{ error?: string }> = ({ error }) => (
+const ErrorMessage: React.FC<{ error?: string | undefined | boolean }> = ({ error }) => (
   <Typography
     variant="caption"
     color="error"

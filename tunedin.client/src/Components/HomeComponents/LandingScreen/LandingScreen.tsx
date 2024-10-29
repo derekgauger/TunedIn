@@ -1,61 +1,126 @@
-import { Box, Button, Container, Stack, Typography } from "@mui/material";
+import { Box, Button, Container, Stack, Divider } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router";
 import { ArrowForward } from "@mui/icons-material";
-import { scrollToTop } from "../../../Utils/functions";
+import CustomTypography from "../../CustomUI/CustomTypography";
+import SocialLinks from "../SocialLinks";
 
 const LandingScreen: React.FC = () => {
   const navigate = useNavigate();
-
-  const handleNavigation = (path: string) => {
-    navigate(path);
-    scrollToTop();
-  };
-
   return (
     <Box
       sx={{
-        position: "absolute",
-        inset: 0,
+        minHeight: {
+          xs: "100vh", // Adjusted for smaller mobile header
+          sm: "100vh", // Adjusted for standard header height
+          md: "100vh",
+        },
         display: "flex",
         alignItems: "center",
+        justifyContent: "center",
+        position: "relative",
       }}
     >
-      <Container maxWidth="md">
-        <Stack spacing={4} alignItems="center">
-          <Typography
-            variant="h2"
-            component="h1"
-            align="center"
-            color="white"
-            fontWeight="bold"
-          >
-            Welcome to our fitness training center.
-          </Typography>
-          <Typography
-            variant="h5"
-            align="center"
-            color="white"
-            sx={{ maxWidth: "sm", mx: "auto" }}
-          >
-            Get the right fitness training for you. Sign in or join our
-            membership.
-          </Typography>
-          <Stack direction={{ xs: "column", sm: "row" }} spacing={4}>
-            <Button
-              type="submit"
-              variant="contained"
-              onClick={() => handleNavigation("/services")}
-              sx={{
-                bgcolor: "primary.main",
-                "&:hover": { bgcolor: "primary.dark" },
-                px: 4,
+      <Container maxWidth="xl" sx={{ position: "relative", zIndex: 1 }}>
+        <Stack spacing={2} alignItems="center">
+          <Box textAlign="center" mx="auto">
+            <CustomTypography
+              size="5xl"
+              bold
+              color="white"
+              style={{
+                width: "80%",
+                textAlign: "center",
+                margin: "auto",
+                lineHeight: 1.2,
+                marginBottom: 3,
+                textShadow: "0 2px 4px rgba(0,0,0,0.2)",
               }}
-              endIcon={<ArrowForward />}
+              fontSizeOverrides={{
+                xs: "3xl",
+                sm: "3xl",
+                md: "4xl",
+                lg: "5xl",
+                xl: "5xl",
+                "2xl": "6xl",
+              }}
             >
-              Get Started
-            </Button>{" "}
-          </Stack>
+              Achieve Your Fitness Goals With Tuned In
+            </CustomTypography>
+            <Divider
+              sx={{
+                backgroundColor: "primary.main",
+                height: 4,
+                my: 4,
+                maxWidth: "80%",
+                marginX: "auto",
+              }}
+            />
+
+            <CustomTypography
+              size="xl"
+              color="white"
+              style={{
+                opacity: 0.9,
+                marginBottom: 6,
+                maxWidth: "80%",
+                marginLeft: "auto",
+                marginRight: "auto",
+              }}
+              fontSizeOverrides={{
+                xs: "md",
+                sm: "md",
+                md: "lg",
+                lg: "xl",
+                xl: "xl",
+                "2xl": "2xl",
+              }}
+            >
+              Join our state-of-the-art facility and get personalized training
+              from expert coaches.
+            </CustomTypography>
+
+            {/* Social Media Section */}
+            <SocialLinks />
+
+            <Stack
+              direction={{ xs: "column", sm: "row" }}
+              spacing={2}
+              justifyContent="center"
+              mt={2}
+            >
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                onClick={() => navigate("/services")}
+                endIcon={<ArrowForward />}
+                sx={{
+                  px: 4,
+                  py: 2,
+                  fontWeight: "bold",
+                }}
+              >
+                Start Your Journey
+              </Button>
+              <Button
+                variant="outlined"
+                size="large"
+                sx={{
+                  color: "white",
+                  borderColor: "white",
+                  "&:hover": {
+                    borderColor: "white",
+                    bgcolor: "rgba(255,255,255,0.1)",
+                  },
+                  fontWeight: "bold",
+                }}
+                onClick={() => navigate("/about")}
+              >
+                Learn More
+              </Button>
+            </Stack>
+          </Box>
         </Stack>
       </Container>
     </Box>

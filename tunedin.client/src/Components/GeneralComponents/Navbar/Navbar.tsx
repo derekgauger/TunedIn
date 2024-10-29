@@ -3,7 +3,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import {
   AppBar,
   Toolbar,
-  Typography,
   Button,
   Box,
   Container,
@@ -12,14 +11,23 @@ import {
   styled,
   Fab,
   useScrollTrigger,
+  IconButton,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import {
   ExpandMore as ExpandMoreIcon,
   Person as PersonIcon,
   KeyboardArrowUp as KeyboardArrowUpIcon,
+  Menu as MenuIcon,
 } from "@mui/icons-material";
 import { useUser } from "../../../Hooks/useUser";
 import { scrollToTop } from "../../../Utils/functions";
+import CustomTypography from "../../CustomUI/CustomTypography";
 
 interface StyledAppBarProps {
   trigger: boolean;
@@ -28,35 +36,53 @@ interface StyledAppBarProps {
 
 const StyledAppBar = styled(AppBar, {
   shouldForwardProp: (prop) => prop !== "trigger" && prop !== "isHome",
-})<StyledAppBarProps>(({ theme, trigger, isHome }) => ({
-  backgroundColor: isHome
-    ? trigger
-      ? "rgba(0, 0, 0, 0.9)"
-      : "transparent"
-    : "rgba(0, 0, 0, 0.9)",
-  transition: theme.transitions.create(["background-color"], {
+})<{ trigger: boolean; isHome: boolean }>(({ theme, trigger, isHome }) => ({
+  backgroundColor: trigger ? `${theme.palette.primary.dark}CC` : "primary.dark",
+  backdropFilter: trigger ? "blur(10px)" : "none",
+  boxShadow: trigger ? theme.shadows[4] : "none",
+  transition: theme.transitions.create(["all"], {
     duration: theme.transitions.duration.standard,
   }),
-  boxShadow: "none",
+  minHeight: "80px",
+  padding: "0 16px",
+  [theme.breakpoints.down("sm")]: {
+    minHeight: "56px",
+  },
 }));
 
-const StyledToolbar = styled(Toolbar)({
-  minHeight: "64px",
+const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   padding: "0 16px",
-});
+}));
 
 const NavButton = styled(Button)(({ theme }) => ({
-  color: "#fff",
-  textTransform: "none",
+  color: "white",
+  fontSize: "1rem",
+  padding: "8px 16px",
+  position: "relative",
+  "&:after": {
+    content: '""',
+    position: "absolute",
+    width: "0%",
+    height: "2px",
+    bottom: 0,
+    left: "50%",
+    transform: "translateX(-50%)",
+    backgroundColor: "secondary.main",
+    transition: "width 0.3s ease",
+  },
   "&:hover": {
     backgroundColor: "transparent",
-    color: theme.palette.primary.main,
+    color: theme.palette.secondary.main,
+    "&:after": {
+      width: "100%",
+    },
   },
 }));
 
 const ActiveNavButton = styled(NavButton)(({ theme }) => ({
-  borderBottom: `2px solid ${theme.palette.primary.main}`,
+  borderBottom: `2px solid ${theme.palette.secondary.main}`,
   paddingBottom: "3px",
+  color: theme.palette.secondary.main,
 }));
 
 const UserButton = styled(Button)(() => ({
@@ -67,18 +93,20 @@ const UserButton = styled(Button)(() => ({
   },
 }));
 
+const Logo = styled("img")(({ theme }) => ({
+  height: "40px",
+  transition: "transform 0.3s ease",
+  "&:hover": {
+    transform: "scale(1.05)",
+  },
+  marginRight: "16px",
+}));
+
 type NavItem = {
   name: string;
   path: string;
+  permission?: boolean;
 };
-
-const navItems: NavItem[] = [
-  { name: "Home", path: "/" },
-  { name: "About", path: "/about" },
-  { name: "Gallery", path: "/gallery" },
-  { name: "Sevices", path: "/services" },
-  { name: "Contact", path: "/contact" },
-];
 
 const ScrollTop: React.FC<{ children: React.ReactElement }> = ({
   children,
@@ -107,9 +135,26 @@ const ScrollTop: React.FC<{ children: React.ReactElement }> = ({
 
 const Navbar: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useUser();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
+  const navItems: NavItem[] = [
+    { name: "Home", path: "/", permission: true },
+    { name: "About", path: "/about", permission: true },
+    { name: "Gallery", path: "/gallery", permission: true },
+    { name: "Sevices", path: "/services", permission: true },
+    { name: "Contact", path: "/contact", permission: true },
+    {
+      name: "Manage Profiles",
+      path: "/manage-profiles",
+      permission: user?.isAdmin,
+    },
+  ];
+
   const trigger = useScrollTrigger({
     disableHysteresis: true,
     threshold: 50,
@@ -122,6 +167,7 @@ const Navbar: React.FC = () => {
     navigate(path);
     scrollToTop();
     setAnchorEl(null);
+    setMobileOpen(false);
   };
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -134,16 +180,58 @@ const Navbar: React.FC = () => {
 
   const handleLogout = () => {
     logout();
-    if (location.pathname === "/profile") {
-      navigate("/");
-    }
+    setMobileOpen(false);
+    navigate("/");
   };
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
+  const drawer = (
+    <Box sx={{ width: 250, bgcolor: "rgba(0, 0, 0, 0.9)", height: "100%" }}>
+      <List>
+        {navItems.map((item) => (
+          <ListItem
+            key={item.name}
+            onClick={() => handleNavigation(item.path)}
+            sx={{
+              borderBottom:
+                location.pathname === item.path
+                  ? `2px solid ${theme.palette.primary.dark}`
+                  : "none",
+              color: "white",
+              "&:hover": {
+                backgroundColor: "rgba(255, 255, 255, 0.1)",
+              },
+            }}
+          >
+            <ListItemText primary={item.name} />
+          </ListItem>
+        ))}
+        {user ? (
+          <>
+            <ListItem onClick={() => handleNavigation("/profile")}>
+              <ListItemText primary="Profile" sx={{ color: "white" }} />
+            </ListItem>
+            <ListItem onClick={handleLogout}>
+              <ListItemText primary="Logout" sx={{ color: "white" }} />
+            </ListItem>
+          </>
+        ) : (
+          <ListItem onClick={() => handleNavigation("/sign-in")}>
+            <ListItemText primary="Sign In" sx={{ color: "white" }} />
+          </ListItem>
+        )}
+      </List>
+    </Box>
+  );
 
   return (
     <>
       {isSignIn ? null : (
         <StyledAppBar position="fixed" trigger={trigger} isHome={isHome}>
-          <Container maxWidth="xl">
+          <Container maxWidth="xl" sx={{ margin: "auto" }}>
             <StyledToolbar disableGutters>
               <Box
                 sx={{
@@ -152,84 +240,111 @@ const Navbar: React.FC = () => {
                   flexGrow: 1,
                   cursor: "pointer",
                 }}
-                onClick={() => {
-                  handleNavigation("/");
-                }}
+                onClick={() => handleNavigation("/")}
               >
-                <img
-                  src="/logo.png"
-                  alt="TI Logo"
-                  style={{ height: "40px", marginRight: "16px" }}
-                />
-                <Typography
-                  variant="h5"
-                  noWrap
-                  component="div"
-                  sx={{ flexGrow: 1, display: "flex", color: "white" }}
+                <Logo src="/logo.png" alt="TI Logo" />
+                <CustomTypography
+                  size="lg"
+                  bold
+                  style={{ letterSpacing: "1px" }}
                 >
                   Tuned In Athlete Development
-                </Typography>
+                </CustomTypography>
               </Box>
 
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                {navItems.map((item) =>
-                  location.pathname === item.path ? (
-                    <ActiveNavButton
-                      key={item.name}
-                      onClick={() => handleNavigation(item.path)}
-                    >
-                      {item.name}
-                    </ActiveNavButton>
+              {isMobile ? (
+                <IconButton
+                  color="inherit"
+                  aria-label="open drawer"
+                  edge="start"
+                  onClick={handleDrawerToggle}
+                  sx={{ ml: 1 }}
+                >
+                  <MenuIcon />
+                </IconButton>
+              ) : (
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  {navItems.map(
+                    (item) =>
+                      item.permission &&
+                      (location.pathname === item.path ? (
+                        <ActiveNavButton
+                          key={item.name}
+                          onClick={() => handleNavigation(item.path)}
+                        >
+                          {item.name}
+                        </ActiveNavButton>
+                      ) : (
+                        <NavButton
+                          key={item.name}
+                          onClick={() => handleNavigation(item.path)}
+                        >
+                          {item.name}
+                        </NavButton>
+                      ))
+                  )}
+
+                  {user ? (
+                    <Box sx={{ ml: 1 }}>
+                      <UserButton
+                        onClick={handleMenu}
+                        startIcon={<PersonIcon />}
+                        endIcon={<ExpandMoreIcon />}
+                      >
+                        {user?.username}
+                      </UserButton>
+                      <Menu
+                        anchorEl={anchorEl}
+                        anchorOrigin={{
+                          vertical: "bottom",
+                          horizontal: "right",
+                        }}
+                        keepMounted
+                        transformOrigin={{
+                          vertical: "top",
+                          horizontal: "right",
+                        }}
+                        open={Boolean(anchorEl)}
+                        onClose={handleClose}
+                        disableScrollLock
+                      >
+                        <MenuItem onClick={() => handleNavigation("/profile")}>
+                          Profile
+                        </MenuItem>
+                        <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                      </Menu>
+                    </Box>
                   ) : (
-                    <NavButton
-                      key={item.name}
-                      onClick={() => handleNavigation(item.path)}
-                    >
-                      {item.name}
+                    <NavButton onClick={() => handleNavigation("/sign-in")}>
+                      Sign In
                     </NavButton>
-                  )
-                )}
-
-                {user ? (
-                  <Box sx={{ ml: 1 }}>
-                    <UserButton
-                      onClick={handleMenu}
-                      startIcon={<PersonIcon />}
-                      endIcon={<ExpandMoreIcon />}
-                    >
-                      {user?.username}
-                    </UserButton>
-                    <Menu
-                      anchorEl={anchorEl}
-                      anchorOrigin={{
-                        vertical: "bottom",
-                        horizontal: "right",
-                      }}
-                      keepMounted
-                      transformOrigin={{
-                        vertical: "top",
-                        horizontal: "right",
-                      }}
-                      open={Boolean(anchorEl)}
-                      onClose={handleClose}
-                      disableScrollLock
-                    >
-                      <MenuItem onClick={() => handleNavigation("/profile")}>
-                        Profile
-                      </MenuItem>
-                      <MenuItem onClick={handleLogout}>Logout</MenuItem>
-                    </Menu>
-                  </Box>
-                ) : (
-                  <NavButton onClick={() => handleNavigation("/sign-in")}>
-                    Sign In
-                  </NavButton>
-                )}
-              </Box>
+                  )}
+                </Box>
+              )}
             </StyledToolbar>
           </Container>
         </StyledAppBar>
       )}
+
+      <Drawer
+        variant="temporary"
+        anchor="right"
+        open={mobileOpen}
+        onClose={handleDrawerToggle}
+        ModalProps={{
+          keepMounted: true, // Better mobile performance
+        }}
+        sx={{
+          display: { xs: "block", md: "none" },
+          "& .MuiDrawer-paper": {
+            boxSizing: "border-box",
+            width: 250,
+          },
+        }}
+      >
+        {drawer}
+      </Drawer>
+
       <ScrollTop>
         <Fab color="primary" size="small" aria-label="scroll back to top">
           <KeyboardArrowUpIcon />

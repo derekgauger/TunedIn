@@ -7,6 +7,7 @@ import Contact from "../Pages/Contact/Contact";
 import Profile from "../Pages/Profile/Profile";
 import Store from "../Pages/Store/Store";
 import PlanDetails from "../Pages/PlanDetails/PlanDetails";
+import ProfilesList from "../Components/ManageProfilesComponents/ProfilesList";
 
 export const routes = [
   {
@@ -40,6 +41,11 @@ export const routes = [
   {
     path: "/sign-in",
     element: <Login />,
+    exact: true,
+  },
+  {
+    path: "/manage-profiles",
+    element: <ProfilesList />,
     exact: true,
   },
   {

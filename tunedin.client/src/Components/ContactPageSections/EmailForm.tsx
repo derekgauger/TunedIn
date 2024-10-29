@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { emailSchema } from "./validations";
 import ErrorMessage from "../GeneralComponents/ErrorMessage/ErrorMessage";
 import { Field, Form, Formik, FormikHelpers } from "formik";
+import GenericSectionText from "../GeneralComponents/GenericSectionText";
+import GenericTextField from "../GeneralComponents/GenericTextField";
 
 interface ContactFormValues {
   yourName: string;
@@ -33,9 +35,7 @@ const EmailForm: React.FC = () => {
   };
   return (
     <Paper elevation={1} sx={{ p: 2, height: "100%" }}>
-      <Typography variant="h6" gutterBottom>
-        Send us a message
-      </Typography>
+      <GenericSectionText text="Send us a message" type="Header" />
       <Formik
         initialValues={initialValues}
         validationSchema={emailSchema}
@@ -43,9 +43,9 @@ const EmailForm: React.FC = () => {
       >
         {({ errors, isSubmitting }) => (
           <Form>
-            <Box sx={{ pb: 1 }}>
+            <Box sx={{ pb: 1, pt: 2 }}>
               <Field
-                as={TextField}
+                as={GenericTextField}
                 fullWidth
                 label="Your Name"
                 name="yourName"
@@ -55,7 +55,7 @@ const EmailForm: React.FC = () => {
             </Box>
             <Box sx={{ pb: 1 }}>
               <Field
-                as={TextField}
+                as={GenericTextField}
                 fullWidth
                 label="Your Email"
                 name="yourEmail"
@@ -66,7 +66,7 @@ const EmailForm: React.FC = () => {
             </Box>
             <Box sx={{ pb: 1 }}>
               <Field
-                as={TextField}
+                as={GenericTextField}
                 fullWidth
                 label="Subject"
                 name="subject"
@@ -76,7 +76,7 @@ const EmailForm: React.FC = () => {
             </Box>
             <Box sx={{ pb: 1 }}>
               <Field
-                as={TextField}
+                as={GenericTextField}
                 fullWidth
                 label="Message"
                 name="message"

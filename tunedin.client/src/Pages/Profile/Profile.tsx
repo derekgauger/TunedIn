@@ -1,18 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Grid,
-  Button,
-  Typography,
-  Paper,
-  styled,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-} from "@mui/material";
-import { NotificationsActive, Lock, Delete } from "@mui/icons-material";
+import { Grid } from "@mui/material";
 import { useUser } from "../../Hooks/useUser";
 import ContainerPaper from "../../Components/GeneralComponents/ContainerPaper/ContainerPaper";
 import { scrollToTop } from "../../Utils/functions";
@@ -22,7 +10,7 @@ import DeleteAccountPopup from "../../Components/ProfileComponents/DeleteAccount
 import NotificationPreferencesModal from "../../Components/ProfileComponents/NotificationPreferencesModal/NotificationPreferencesModal";
 import AccountInfoForm from "../../Components/ProfileComponents/AccountInfoForm/AccountInfoForm";
 import PersonalInfo from "../../Components/ProfileComponents/PersonalInfo/PersonalInfo";
-import BillingInfo from "../../Components/ProfileComponents/BillingInfo/BillingInfo";
+// import BillingInfo from "../../Components/ProfileComponents/BillingInfo/BillingInfo";
 import QuickActions from "../../Components/ProfileComponents/QuickActions/QuickActions";
 import CurrentMembershipSection from "../../Components/ProfileComponents/CurrentMembershipSection/CurrentMembershipSection";
 import AccountOptions from "../../Components/ProfileComponents/AccountOptions/AccountOptions";
@@ -56,7 +44,10 @@ const Profile: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
-      await queryUser();
+      const isValid = await queryUser();
+      if (!isValid) {
+        handleNavigation("/sign-in");
+      }
       setIsLoading(false);
     };
     fetchData();
@@ -86,8 +77,8 @@ const Profile: React.FC = () => {
   };
 
   const handleChangePassword = async () => {
-    console.log("Changing password with values:", values);
-  }
+    console.log("Changing password");
+  };
 
   if (isLoading) {
     return <LoadingIcon />;
@@ -107,7 +98,7 @@ const Profile: React.FC = () => {
         onConfirm={handleSavePreferences}
         initialPreferences={preferences}
       />
-      <ChangePasswordModal 
+      <ChangePasswordModal
         open={openChangePassword}
         onClose={() => setOpenChangePassword(false)}
         onConfirm={handleChangePassword}
@@ -115,7 +106,7 @@ const Profile: React.FC = () => {
       <Grid container spacing={4}>
         <Grid item xs={12} md={4}>
           <PersonalInfo />
-          <BillingInfo />
+          {/* <BillingInfo /> */}
           <QuickActions
             setOpenNotificationPreferences={setOpenNotificationPreferences}
             setOpenDeletePopup={setOpenDeletePopup}

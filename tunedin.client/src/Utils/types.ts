@@ -6,9 +6,11 @@ export type User = {
   firstName: string;
   lastName: string;
   phoneNumber: string;
-  goal?: string;
+  goal: string;
   membership?: string;
   membershipData?: Membership;
+  avatar: string;
+  isAdmin: boolean;
 };
 
 export type Membership = {

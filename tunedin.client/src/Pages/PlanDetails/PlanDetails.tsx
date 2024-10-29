@@ -9,6 +9,7 @@ import {
   styled,
   Grid,
   Paper,
+  Box,
 } from "@mui/material";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
@@ -18,6 +19,8 @@ import RestaurantIcon from "@mui/icons-material/Restaurant";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import ContainerPaper from "../../Components/GeneralComponents/ContainerPaper/ContainerPaper";
 import { useLocation } from "react-router-dom";
+import GenericSectionText from "../../Components/GeneralComponents/GenericSectionText";
+import CustomTypography from "../../Components/CustomUI/CustomTypography";
 
 const SectionPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(3),
@@ -81,24 +84,53 @@ const PlanDetails: React.FC = () => {
       <SectionPaper elevation={3}>
         <Grid container spacing={4}>
           <Grid item xs={12} md={6}>
-            <Typography variant="h4" gutterBottom color="primary">
-              {plan.title}
-            </Typography>
-            <Typography variant="h5" gutterBottom>
-              {plan.price}
-            </Typography>
-            <Typography variant="body1" paragraph>
-              {plan.description}
-            </Typography>
-            <Button
-              variant="contained"
-              size="large"
-              color="primary"
-              fullWidth
-              sx={{ mt: 2 }}
+            <Box
+              sx={{ display: "flex", flexDirection: "column", height: "100%" }}
             >
-              Sign Up Now
-            </Button>
+              <CustomTypography
+                bold
+                size={"3xl"}
+                fontSizeOverrides={{
+                  xs: "2xl",
+                  sm: "2xl",
+                  md: "2xl",
+                  lg: "3xl",
+                  xl: "3xl",
+                  "2xl": "4xl",
+                }}
+                color={"primary.main"}
+                style={{
+                  fontVariant: "small-caps",
+                }}
+              >
+                {plan.title}
+              </CustomTypography>
+              <CustomTypography
+                size={"lg"}
+                fontSizeOverrides={{
+                  xs: "lg",
+                  sm: "lg",
+                  md: "lg",
+                  lg: "xl",
+                  xl: "xl",
+                  "2xl": "2xl",
+                }}
+                color="black"
+                style={{ marginBottom: "1rem" }}
+              >
+                {plan.price}
+              </CustomTypography>
+              <GenericSectionText text={plan.description} type="Description" />
+              <Button
+                variant="contained"
+                size="large"
+                color="primary"
+                fullWidth
+                sx={{ mt: "auto" }}
+              >
+                Sign Up Now
+              </Button>
+            </Box>
           </Grid>
           <Grid item xs={12} md={6}>
             <PlanImage src={plan.image} alt={plan.title} />
@@ -107,7 +139,7 @@ const PlanDetails: React.FC = () => {
       </SectionPaper>
 
       <SectionPaper elevation={3}>
-        <SectionTitle variant="h6">Plan Features</SectionTitle>
+        <GenericSectionText text="What's Included" type="Header" />
         <Grid container spacing={2}>
           {plan.features.map((feature, index) => (
             <Grid item xs={12} sm={6} md={4} key={index}>
@@ -115,7 +147,14 @@ const PlanDetails: React.FC = () => {
                 <ListItemIcon>
                   <CheckCircleOutlineIcon color="primary" />
                 </ListItemIcon>
-                <ListItemText primary={feature} />
+                <ListItemText
+                  primary={
+                    <GenericSectionText
+                      text={feature}
+                      type={"BulletDescription"}
+                    ></GenericSectionText>
+                  }
+                />
               </ListItem>
             </Grid>
           ))}
@@ -123,30 +162,39 @@ const PlanDetails: React.FC = () => {
       </SectionPaper>
 
       <SectionPaper elevation={3}>
-        <SectionTitle variant="h6">Our Qualifications</SectionTitle>
+        <GenericSectionText text="Our Qualifications" type="Header" />
         <List>
           {qualifications.map((qualification, index) => (
             <ListItem key={index}>
               <ListItemIcon>
                 {React.cloneElement(qualification.icon, { color: "primary" })}
               </ListItemIcon>
-              <ListItemText primary={qualification.text} />
+              <ListItemText
+                primary={
+                  <GenericSectionText
+                    text={qualification.text}
+                    type={"BulletDescription"}
+                  ></GenericSectionText>
+                }
+              />
             </ListItem>
           ))}
         </List>
       </SectionPaper>
 
       <SectionPaper elevation={3}>
-        <SectionTitle variant="h6">Member Testimonial</SectionTitle>
+        <GenericSectionText text="Member Testimonial" type="Header" />
         <Grid container spacing={2}>
           <Grid item>
             <FormatQuoteIcon fontSize="large" color="primary" />
           </Grid>
           <Grid item xs>
-            <Typography variant="body1" paragraph>
-              {testimonial.text}
-            </Typography>
-            <Typography variant="subtitle2">- {testimonial.author}</Typography>
+            <GenericSectionText text={testimonial.text} type="Description" />
+            <GenericSectionText
+              text={`-${testimonial.author}`}
+              type="BulletHeader"
+              className="mt-2"
+            />
           </Grid>
         </Grid>
       </SectionPaper>

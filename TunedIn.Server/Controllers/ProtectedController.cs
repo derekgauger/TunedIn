@@ -19,6 +19,26 @@ namespace LoginSystem.Backend.Controllers
             _context = context;
         }
 
+        [HttpGet("all-users")]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var users = await _context.Users.Select(user => new
+            {
+                user.Id,
+                user.Username,
+                user.Email,
+                user.FirstName,
+                user.LastName,
+                user.PhoneNumber,
+                user.Goal,
+                user.CreatedAt,
+                user.Membership,
+                user.IsAdmin
+            }).ToListAsync();
+
+            return Ok(users);
+        }
+
         [HttpGet("user-info")]
         public async Task<IActionResult> GetUserInfo()
         {
@@ -49,7 +69,8 @@ namespace LoginSystem.Backend.Controllers
                 user.PhoneNumber,
                 user.Goal,
                 user.CreatedAt,
-                user.Membership
+                user.Membership,
+                user.IsAdmin
             };
 
             return Ok(userInfo);

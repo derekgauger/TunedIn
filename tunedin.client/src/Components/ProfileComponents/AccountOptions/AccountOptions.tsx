@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import { NotificationsActive, Lock, Delete } from "@mui/icons-material";
+import GenericSectionText from "../../GeneralComponents/GenericSectionText";
 
 const StyledListItemIcon = styled(ListItemIcon)(({ theme }) => ({
   minWidth: theme.spacing(4),
@@ -33,15 +34,19 @@ const AccountOptions: React.FC<AccountOptionsProps> = ({
 }) => {
   return (
     <Paper elevation={3} sx={{ p: 3 }}>
-      <Typography variant="h6" gutterBottom>
-        Account Options
-      </Typography>
+      <GenericSectionText text="Account Options" type="Header" />
       <List>
         <ListItem>
           <StyledListItemIcon>
             <Lock />
           </StyledListItemIcon>
-          <ListItemText primary="Change Password" />
+          <ListItemText
+            primary={
+              <GenericSectionText type="Description" colorOverride="black">
+                Change Password
+              </GenericSectionText>
+            }
+          />
           <StyledButton
             variant="outlined"
             color="primary"
@@ -54,7 +59,13 @@ const AccountOptions: React.FC<AccountOptionsProps> = ({
           <StyledListItemIcon>
             <NotificationsActive />
           </StyledListItemIcon>
-          <ListItemText primary="Notification Preferences" />
+          <ListItemText
+            primary={
+              <GenericSectionText type="Description" colorOverride="black">
+                Notification Preferences
+              </GenericSectionText>
+            }
+          />
           <StyledButton
             variant="outlined"
             color="primary"
@@ -67,7 +78,13 @@ const AccountOptions: React.FC<AccountOptionsProps> = ({
           <StyledListItemIcon>
             <Delete />
           </StyledListItemIcon>
-          <ListItemText primary="Delete Account" />
+          <ListItemText
+            primary={
+              <GenericSectionText type="Description" colorOverride="black">
+                Delete Account
+              </GenericSectionText>
+            }
+          />
           <StyledButton
             variant="outlined"
             color="error"
