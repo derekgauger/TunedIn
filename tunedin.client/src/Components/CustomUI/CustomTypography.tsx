@@ -85,7 +85,8 @@ const CustomTypography: React.FC<CustomTypographyProps> = ({
           ] as PaletteColor
         )[shade as keyof PaletteColor];
       }
-      return theme.palette[color as keyof typeof theme.palette].main;
+      const paletteColor = theme.palette[color as keyof typeof theme.palette];
+      return (paletteColor as PaletteColor)?.main || color;
     } catch (error) {
       console.error(`Error accessing color ${color} in theme palette:`, error);
       return color;

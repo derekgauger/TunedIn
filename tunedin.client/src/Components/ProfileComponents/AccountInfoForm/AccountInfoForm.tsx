@@ -1,49 +1,35 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Box, Button, Grid, Paper, TextField, Typography } from "@mui/material";
-import { Field, Form, Formik, FormikHelpers } from "formik";
+import { Box, Button, Grid, Paper, InputAdornment } from "@mui/material";
+import { Field, Form, Formik } from "formik";
 import React from "react";
 import ErrorMessage from "../../GeneralComponents/ErrorMessage/ErrorMessage";
 import InputMask from "react-input-mask";
-import { useUser } from "../../../Hooks/useUser";
-import { accountInfoSchema } from "./validations";
-import { sendUserUpdateRequest } from "../../../Functions/users";
+import { accountInfoSchema, initialAccountInfo } from "./validations";
 import { parsePhoneNumber } from "../../../Utils/functions";
-import { Save } from "@mui/icons-material";
+import { Save, VerifiedUser } from "@mui/icons-material";
 import GenericTextField from "../../GeneralComponents/GenericTextField";
 import GenericSectionText from "../../GeneralComponents/GenericSectionText";
+import { User } from "../../../Utils/types";
+import { DARK } from "../../../Utils/colors";
 
+interface AccountInfoFormProps {
+  userDetails: User | undefined;
+  updateAccountInformation: any;
+}
 
-const AccountInfoForm: React.FC = () => {
-  const { user, queryUser } = useUser();
-
-  const handleSaveChanges = async (
-    values: any,
-    { setSubmitting }: FormikHelpers<any>
-  ) => {
-    if (user?.id !== undefined) {
-      const response = await sendUserUpdateRequest(
-        user.id,
-        values.firstName,
-        values.lastName,
-        values.username,
-        values.email,
-        parsePhoneNumber(values.phoneNumber),
-        values.goal
-      );
-    }
-    setSubmitting(false);
-    queryUser();
-  };
-
+const AccountInfoForm: React.FC<AccountInfoFormProps> = ({
+  userDetails,
+  updateAccountInformation,
+}) => {
   const compareBeforeAndAfter = (values: any) => {
     const phoneNumberValue = parsePhoneNumber(values.phoneNumber);
     if (
-      values.firstName === user?.firstName &&
-      values.lastName === user?.lastName &&
-      values.username === user?.username &&
-      values.email === user?.email &&
-      phoneNumberValue === user?.phoneNumber &&
-      values.goal === user?.goal
+      values.firstName === userDetails?.firstName &&
+      values.lastName === userDetails?.lastName &&
+      values.username === userDetails?.username &&
+      values.email === userDetails?.email &&
+      phoneNumberValue === userDetails?.phoneNumber &&
+      values.goal === userDetails?.goal
     ) {
       return false;
     }
@@ -51,11 +37,14 @@ const AccountInfoForm: React.FC = () => {
   };
 
   return (
-    <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
+    <Paper
+      elevation={3}
+      sx={{ p: 3, mb: 4, backgroundColor: DARK ? "secondary.light" : "#white" }}
+    >
       <Formik
-        initialValues={user}
+        initialValues={userDetails ?? initialAccountInfo}
         validationSchema={accountInfoSchema}
-        onSubmit={handleSaveChanges}
+        onSubmit={updateAccountInformation}
       >
         {({ values, errors, touched, isValid, dirty }) => (
           <Form>
@@ -69,6 +58,7 @@ const AccountInfoForm: React.FC = () => {
                     name="firstName"
                     label="First Name"
                     error={touched.firstName && errors.firstName}
+                    isDark={DARK}
                   />
                   <ErrorMessage error={touched.firstName && errors.firstName} />
                 </Box>
@@ -81,6 +71,7 @@ const AccountInfoForm: React.FC = () => {
                     name="lastName"
                     label="Last Name"
                     error={touched.lastName && errors.lastName}
+                    isDark={DARK}
                   />
                   <ErrorMessage error={touched.lastName && errors.lastName} />
                 </Box>
@@ -93,6 +84,7 @@ const AccountInfoForm: React.FC = () => {
                     name="username"
                     label="Username"
                     error={touched.username && errors.username}
+                    isDark={DARK}
                   />
                   <ErrorMessage error={touched.username && errors.username} />
                 </Box>
@@ -106,6 +98,26 @@ const AccountInfoForm: React.FC = () => {
                     label="Email"
                     type="email"
                     error={touched.email && errors.email}
+                    isDark={DARK}
+                    InputProps={{
+                      endAdornment: userDetails &&
+                        !userDetails.verifiedEmail && (
+                          <InputAdornment position="end">
+                            <Button
+                              size="small"
+                              variant="text"
+                              sx={{
+                                minWidth: "auto",
+                                textTransform: "none",
+                                color: DARK ? "primary.light" : "primary.main",
+                              }}
+                              startIcon={<VerifiedUser fontSize="small" />}
+                            >
+                              Verify Email
+                            </Button>
+                          </InputAdornment>
+                        ),
+                    }}
                   />
                   <ErrorMessage error={touched.email && errors.email} />
                 </Box>
@@ -122,6 +134,30 @@ const AccountInfoForm: React.FC = () => {
                             label="Phone Number"
                             fullWidth
                             error={touched.phoneNumber && errors.phoneNumber}
+                            isDark={DARK}
+                            InputProps={{
+                              endAdornment: userDetails &&
+                                !userDetails.verifiedPhone && (
+                                  <InputAdornment position="end">
+                                    <Button
+                                      size="small"
+                                      variant="text"
+                                      sx={{
+                                        minWidth: "auto",
+                                        textTransform: "none",
+                                        color: DARK
+                                          ? "primary.light"
+                                          : "primary.main",
+                                      }}
+                                      startIcon={
+                                        <VerifiedUser fontSize="small" />
+                                      }
+                                    >
+                                      Verify Phone
+                                    </Button>
+                                  </InputAdornment>
+                                ),
+                            }}
                           />
                         )}
                       </InputMask>
@@ -142,6 +178,7 @@ const AccountInfoForm: React.FC = () => {
                     multiline
                     rows={3}
                     error={touched.goal && errors.goal}
+                    isDark={DARK}
                   />
                   <ErrorMessage error={touched.goal && errors.goal} />
                 </Box>
@@ -157,7 +194,14 @@ const AccountInfoForm: React.FC = () => {
               <Button
                 type="submit"
                 variant="contained"
-                color="primary"
+                sx={{
+                  color: !(isValid && dirty && compareBeforeAndAfter(values))
+                    ? "gray !important"
+                    : "white !important",
+                  outline: !(isValid && dirty && compareBeforeAndAfter(values))
+                    ? "1px solid gray"
+                    : "none",
+                }}
                 startIcon={<Save />}
                 disabled={!(isValid && dirty && compareBeforeAndAfter(values))}
               >

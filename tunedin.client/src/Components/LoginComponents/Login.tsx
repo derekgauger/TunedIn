@@ -2,19 +2,18 @@ import { useState } from "react";
 import { Box, Paper } from "@mui/material";
 import LoginForm from "./LoginForm/LoginForm";
 import RegisterForm from "./RegisterForm/RegisterForm";
-import { useNavigate } from "react-router-dom";
 import { useUser } from "../../Hooks/useUser";
 import BackgroundImage from "../GeneralComponents/BackgroundImage/BackgroundImage";
-import { parsePhoneNumber } from "../../Utils/functions";
+import { handleNavigation, parsePhoneNumber } from "../../Utils/functions";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import SlidingAlternativeOptionBox from "./SlidingAlternativeOptionBox";
+import { sendTemplatedEmail } from "../../Functions/email";
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [triedSubmit, setTriedSubmit] = useState(false);
   const { login, register } = useUser();
 
-  const navigate = useNavigate();
   const isMobile = useMediaQuery("(max-width:1050px)");
 
   const handleSubmit = async (values: any, { setSubmitting }: any) => {
@@ -24,7 +23,7 @@ const Login = () => {
         values.password
       );
       if (successfulLogin) {
-        navigate("/");
+        handleNavigation("/");
       }
     } else {
       const successfulRegister = await register(
@@ -36,6 +35,8 @@ const Login = () => {
         parsePhoneNumber(values.phoneNumber)
       );
       if (successfulRegister) {
+        const welcomeEmailParameters = { Username: values.username };
+        sendTemplatedEmail("welcome", values.email, welcomeEmailParameters);
         toggleForm();
       }
     }

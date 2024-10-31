@@ -1,12 +1,11 @@
 import { Box, Button, Container, Stack, Divider } from "@mui/material";
 import React from "react";
-import { useNavigate } from "react-router";
 import { ArrowForward } from "@mui/icons-material";
 import CustomTypography from "../../CustomUI/CustomTypography";
 import SocialLinks from "../SocialLinks";
+import { handleNavigation } from "../../../Utils/functions";
 
 const LandingScreen: React.FC = () => {
-  const navigate = useNavigate();
   return (
     <Box
       sx={{
@@ -93,7 +92,7 @@ const LandingScreen: React.FC = () => {
                 variant="contained"
                 color="primary"
                 size="large"
-                onClick={() => navigate("/services")}
+                onClick={() => handleNavigation("/services")}
                 endIcon={<ArrowForward />}
                 sx={{
                   px: 4,
@@ -115,7 +114,7 @@ const LandingScreen: React.FC = () => {
                   },
                   fontWeight: "bold",
                 }}
-                onClick={() => navigate("/about")}
+                onClick={() => handleNavigation("/about")}
               >
                 Learn More
               </Button>

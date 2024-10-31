@@ -3,21 +3,21 @@ import { IconButton, InputAdornment, TextField } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import GenericTextField from "../../GeneralComponents/GenericTextField";
 
-
 interface PasswordFieldProps {
   field: any;
   [key: string]: any;
 }
 
-
-const PasswordField : React.FC<PasswordFieldProps> = ({ field, ...props }) => {
+const PasswordField: React.FC<PasswordFieldProps> = ({ field, ...props }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
     event.preventDefault();
   };
 
@@ -25,7 +25,7 @@ const PasswordField : React.FC<PasswordFieldProps> = ({ field, ...props }) => {
     <GenericTextField
       {...field}
       {...props}
-      type={showPassword ? 'text' : 'password'}
+      type={showPassword ? "text" : "password"}
       InputProps={{
         endAdornment: (
           <InputAdornment position="end">
@@ -34,6 +34,9 @@ const PasswordField : React.FC<PasswordFieldProps> = ({ field, ...props }) => {
               onClick={handleClickShowPassword}
               onMouseDown={handleMouseDownPassword}
               edge="end"
+              sx={{
+                color: "white",
+              }}
             >
               {showPassword ? <VisibilityOff /> : <Visibility />}
             </IconButton>

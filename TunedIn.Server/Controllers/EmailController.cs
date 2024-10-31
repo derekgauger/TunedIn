@@ -2,11 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 
-namespace YourNamespace.Controllers
+namespace TunedIn.Server.Controllers
 {
   [ApiController]
   [Route("api/[controller]")]
-  [Authorize] // This attribute ensures that all endpoints in this controller require authorization
+  [Authorize]
   public class EmailController : ControllerBase
   {
     private readonly EmailService _emailService;
@@ -16,16 +16,23 @@ namespace YourNamespace.Controllers
       _emailService = emailService;
     }
 
-    [HttpPost("send-email")]
-    public IActionResult SendEmail([FromBody] EmailModel model)
+    [HttpPost("send-templated-email")]
+    public IActionResult SendTemplatedEmail([FromBody] TemplatedEmailModel model)
     {
-      var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
-      if (string.IsNullOrEmpty(userEmail))
+      if (string.IsNullOrEmpty(model.ToEmail))
       {
-        return BadRequest("User email not found in the token");
+        return BadRequest("Recipient email is required");
       }
-      _emailService.SendEmail(userEmail, model.Subject, model.Body, model.Email, model.Name);
+
+      _emailService.SendTemplatedEmail(model.TemplateName, model.ToEmail, model.Parameters);
       return Ok("Email sent successfully");
     }
+  }
+
+  public class TemplatedEmailModel
+  {
+    public string TemplateName { get; set; }
+    public string ToEmail { get; set; }
+    public Dictionary<string, string> Parameters { get; set; }
   }
 }

@@ -11,6 +11,7 @@ import {
 import React from "react";
 import { NotificationsActive, Lock, Delete } from "@mui/icons-material";
 import GenericSectionText from "../../GeneralComponents/GenericSectionText";
+import { DARK } from "../../../Utils/colors";
 
 const StyledListItemIcon = styled(ListItemIcon)(({ theme }) => ({
   minWidth: theme.spacing(4),
@@ -33,7 +34,10 @@ const AccountOptions: React.FC<AccountOptionsProps> = ({
   setOpenChangePassword,
 }) => {
   return (
-    <Paper elevation={3} sx={{ p: 3 }}>
+    <Paper
+      elevation={3}
+      sx={{ p: 3, backgroundColor: DARK ? "secondary.light" : "white" }}
+    >
       <GenericSectionText text="Account Options" type="Header" />
       <List>
         <ListItem>
@@ -42,7 +46,10 @@ const AccountOptions: React.FC<AccountOptionsProps> = ({
           </StyledListItemIcon>
           <ListItemText
             primary={
-              <GenericSectionText type="Description" colorOverride="black">
+              <GenericSectionText
+                type="Description"
+                colorOverride={DARK ? "white" : "black"}
+              >
                 Change Password
               </GenericSectionText>
             }
@@ -61,7 +68,10 @@ const AccountOptions: React.FC<AccountOptionsProps> = ({
           </StyledListItemIcon>
           <ListItemText
             primary={
-              <GenericSectionText type="Description" colorOverride="black">
+              <GenericSectionText
+                type="Description"
+                colorOverride={DARK ? "white" : "black"}
+              >
                 Notification Preferences
               </GenericSectionText>
             }
@@ -80,7 +90,10 @@ const AccountOptions: React.FC<AccountOptionsProps> = ({
           </StyledListItemIcon>
           <ListItemText
             primary={
-              <GenericSectionText type="Description" colorOverride="black">
+              <GenericSectionText
+                type="Description"
+                colorOverride={DARK ? "white" : "black"}
+              >
                 Delete Account
               </GenericSectionText>
             }

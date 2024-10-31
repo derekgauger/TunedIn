@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Button, IconButton, Typography } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CustomTypography from "../CustomUI/CustomTypography";
-import { useNavigate } from "react-router";
+import { handleNavigation } from "../../Utils/functions";
 
 interface SlidingAlternativeOptionBoxProps {
   isLogin: boolean;
@@ -12,7 +12,6 @@ interface SlidingAlternativeOptionBoxProps {
 const SlidingAlternativeOptionBox: React.FC<
   SlidingAlternativeOptionBoxProps
 > = ({ isLogin, toggleForm }) => {
-  const navigate = useNavigate();
   
   return (
     <Box
@@ -43,7 +42,7 @@ const SlidingAlternativeOptionBox: React.FC<
       </Button>
       <IconButton
         color="inherit"
-        onClick={() => navigate("/")}
+        onClick={() => handleNavigation("/")}
         sx={{ position: "absolute", top: 16, left: 16 }}
       >
         <ArrowBackIcon />

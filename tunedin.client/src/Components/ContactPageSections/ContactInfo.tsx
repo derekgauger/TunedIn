@@ -20,6 +20,7 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import { styled } from "@mui/material/styles";
 import GenericSectionText from "../GeneralComponents/GenericSectionText";
+import { DARK } from "../../Utils/colors";
 
 const StyledListItemIcon = styled(ListItemIcon)(({ theme }) => ({
   minWidth: theme.spacing(4),
@@ -118,7 +119,10 @@ const ContactInfo: React.FC = () => {
     };
 
   return (
-    <Paper elevation={1} sx={{ p: 2, height: "100%" }}>
+    <Paper
+      elevation={1}
+      sx={{ p: 2, height: "100%", bgcolor: DARK ? "secondary.light" : "white" }}
+    >
       <GenericSectionText text="Contact Information" type="Header" />
       {accordionData.map((section) => (
         <Accordion
@@ -128,9 +132,15 @@ const ContactInfo: React.FC = () => {
             (section.id === "panel1" && expanded === "")
           }
           onChange={handleChange(section.id)}
-          sx={{ mt: section.id === "panel1" ? 2 : 0 }}
+          sx={{
+            mt: section.id === "panel1" ? 2 : 0,
+            bgcolor: DARK ? "secondary.light" : "#fafafa",
+            border: "1px solid white",
+          }}
         >
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon sx={{ color: "white" }} />}
+          >
             <GenericSectionText text={section.title} type="AccordionHeader" />
           </AccordionSummary>
           <AccordionDetails>

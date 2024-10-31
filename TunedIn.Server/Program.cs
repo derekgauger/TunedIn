@@ -33,6 +33,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Register AuthService
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<MembershipService>();
+builder.Services.AddScoped<EmailService>();
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddSingleton<EmailTemplateService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

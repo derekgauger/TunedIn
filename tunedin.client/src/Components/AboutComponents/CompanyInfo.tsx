@@ -2,6 +2,7 @@ import { Avatar, Paper, Box } from "@mui/material";
 import React from "react";
 import { AboutCompanyInfoData } from "../../Utils/types";
 import GenericSectionText from "../GeneralComponents/GenericSectionText";
+import { DARK } from "../../Utils/colors";
 
 const CompanyInfo: React.FC = () => {
   const companyInfo: AboutCompanyInfoData = {
@@ -15,12 +16,13 @@ const CompanyInfo: React.FC = () => {
     <Paper
       elevation={3}
       sx={{
-        p: 2,
+        p: 4,
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
         height: "100%",
+        backgroundColor: DARK ? "secondary.light" : "white",
       }}
     >
       <Box

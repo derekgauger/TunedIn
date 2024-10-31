@@ -47,7 +47,20 @@ export const sendRegisterRequest = async (
 
 export const sendGetAllUsers = async () => {
   try {
-    const response = await api.get("/protected/all-users");
+    const response = await api.get("/protecteduser/all-users");
+    return response;
+  } catch (error: any) {
+    enqueueSnackbar(error.response.data.message, {
+      variant: "error",
+    });
+  }
+};
+
+export const sendGetUserByUsername = async (username: string) => {
+  try {
+    const response = await api.get(`/protecteduser/user-by-username`, {
+      params: { Username: username },
+    });
     return response;
   } catch (error: any) {
     enqueueSnackbar(error.response.data.message, {
@@ -60,7 +73,6 @@ export const sendUserInfoRequest = async () => {
   try {
     const token = localStorage.getItem("token");
     if (!token) {
-      console.error("User token not found. Try logging in again.");
       return;
     }
 
@@ -75,7 +87,7 @@ export const sendUserInfoRequest = async () => {
       localStorage.removeItem("token");
       return;
     }
-    const response = await api.get("/protected/user-info");
+    const response = await api.get("/protecteduser/user-info");
     localStorage.setItem("user", JSON.stringify(response.data));
     return response;
   } catch (error: any) {
@@ -92,7 +104,8 @@ export const sendUserUpdateRequest = async (
   username: string,
   email: string,
   phoneNumber: string,
-  goal: string
+  goal: string,
+  membership: string
 ) => {
   try {
     const token = localStorage.getItem("token");
@@ -100,7 +113,7 @@ export const sendUserUpdateRequest = async (
       console.error("Use token not found. Try logging in again.");
       return;
     }
-    const response = await api.put("/protected/update-user", {
+    const response = await api.put("/protecteduser/update-user", {
       id,
       firstName,
       lastName,
@@ -108,6 +121,7 @@ export const sendUserUpdateRequest = async (
       email,
       phoneNumber,
       goal,
+      membership,
     });
     localStorage.setItem("user", JSON.stringify(response.data));
     return response;
@@ -118,14 +132,17 @@ export const sendUserUpdateRequest = async (
   }
 };
 
-export const sendUserDeleteRequest = async () => {
+export const sendUserDeleteRequest = async (username: string) => {
   try {
     const token = localStorage.getItem("token");
     if (!token) {
-      console.error("Use token not found. Try logging in again.");
       return;
     }
-    const response = await api.delete("/protected/delete-account");
+    const response = await api.delete(`/protecteduser/delete-account`, {
+      params: {
+        usernameToDelete: username,
+      },
+    });
     return response;
   } catch (error: any) {
     enqueueSnackbar(error.response.data.message, {

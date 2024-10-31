@@ -1,33 +1,43 @@
-import React, { useState } from "react";
-import {
-  Box,
-  Tab,
-  Tabs,
-  Grid,
-  Card,
-  CardMedia,
-} from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Box, Tab, Tabs, Grid, Card, CardMedia } from "@mui/material";
 import ReactPlayer from "react-player";
 import ContainerPaper from "../../Components/GeneralComponents/ContainerPaper/ContainerPaper";
 import PageHeader from "../../Components/GeneralComponents/PageHeader/PageHeader";
 import FullScreenImage from "../../Components/GalleryComponents/FullScreenImage/FullScreenImage";
 import LoadingIcon from "../../Components/GeneralComponents/LoadingIcon/LoadingIcon";
+import { DARK } from "../../Utils/colors";
 
 const Gallery: React.FC = () => {
   const [tabValue, setTabValue] = useState(0);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(
+    null
+  );
   const [isLoading, setIsLoading] = useState(false);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
 
-  const handleImageClick = (imageSrc: string) => {
-    setSelectedImage(imageSrc);
+  const handleImageClick = (index: number) => {
+    setSelectedImageIndex(index);
   };
 
   const handleCloseFullscreen = () => {
-    setSelectedImage(null);
+    setSelectedImageIndex(null);
+  };
+
+  const handleNavigateImage = (direction: "prev" | "next") => {
+    if (selectedImageIndex === null) return;
+
+    if (direction === "next") {
+      setSelectedImageIndex((prev) =>
+        prev === images.length - 1 ? 0 : (prev ?? 0) + 1
+      );
+    } else {
+      setSelectedImageIndex((prev) =>
+        prev === 0 ? images.length - 1 : (prev ?? 0) - 1
+      );
+    }
   };
 
   React.useEffect(() => {
@@ -68,8 +78,8 @@ const Gallery: React.FC = () => {
     <ContainerPaper>
       <PageHeader title="Gallery" />
       <Tabs value={tabValue} onChange={handleTabChange} centered sx={{ mb: 4 }}>
-        <Tab label="Images" />
-        <Tab label="Videos" />
+        <Tab label="Images" sx={{ color: DARK ? "white" : "black" }} />
+        <Tab label="Videos" sx={{ color: DARK ? "white" : "black" }} />
       </Tabs>
 
       {tabValue === 0 && (
@@ -84,7 +94,7 @@ const Gallery: React.FC = () => {
                   "&:hover": { transform: "scale(1.05)" },
                   cursor: "pointer",
                 }}
-                onClick={() => handleImageClick(image)}
+                onClick={() => handleImageClick(index)}
               >
                 <CardMedia
                   component="img"
@@ -117,8 +127,14 @@ const Gallery: React.FC = () => {
         </Grid>
       )}
 
-      {selectedImage && (
-        <FullScreenImage src={selectedImage} onClose={handleCloseFullscreen} />
+      {selectedImageIndex !== null && (
+        <FullScreenImage
+          src={images[selectedImageIndex]}
+          onClose={handleCloseFullscreen}
+          onNavigate={handleNavigateImage}
+          totalImages={images.length}
+          currentIndex={selectedImageIndex}
+        />
       )}
     </ContainerPaper>
   );

@@ -13,7 +13,7 @@ interface DeleteAccountPopupProps {
   open: boolean;
   onClose: () => void;
   onConfirm: () => void;
-  username: string;
+  username: string | undefined;
 }
 
 const DeleteAccountPopup: React.FC<DeleteAccountPopupProps> = ({

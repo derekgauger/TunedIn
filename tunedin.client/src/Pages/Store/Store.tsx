@@ -50,13 +50,7 @@ const Store: React.FC = () => {
       />
       <Grid container spacing={4}>
         {membershipOptions.map((option, index) => (
-          <Grid
-            item
-            key={index}
-            xs={12}
-            sm={6}
-            md={4}
-          >
+          <Grid item key={index} xs={12} sm={6} md={4}>
             <MembershipCard option={option} />
           </Grid>
         ))}

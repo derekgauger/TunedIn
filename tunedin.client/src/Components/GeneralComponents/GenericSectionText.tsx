@@ -1,5 +1,6 @@
 import React from "react";
 import CustomTypography from "../CustomUI/CustomTypography";
+import { DARK } from "../../Utils/colors";
 
 type TextType =
   | "Header"
@@ -46,7 +47,7 @@ const GenericSectionText: React.FC<GenericSectionTextProps> = ({
           semiBold
           fontSizeOverrides={{ xs: "md", sm: "md" }}
           className={`${alignmentClass} ${className ? className : ""}`}
-          color={colorOverride}
+          color={colorOverride ? colorOverride : DARK ? "white" : "black"}
           style={{
             fontVariant: "small-caps",
           }}
@@ -57,9 +58,9 @@ const GenericSectionText: React.FC<GenericSectionTextProps> = ({
       {type === "Description" && (
         <CustomTypography
           size="sm"
-          color={colorOverride || "text.secondary"}
           className={`${alignmentClass} ${className ? className : ""}`}
           fontSizeOverrides={{ xs: "sm", sm: "sm" }}
+          color={colorOverride ? colorOverride : DARK ? "#E0E0E0" : "gray"}
         >
           {text || children}
         </CustomTypography>
@@ -69,7 +70,7 @@ const GenericSectionText: React.FC<GenericSectionTextProps> = ({
           size={"md"}
           semiBold
           className={`${alignmentClass} ${className ? className : ""}`}
-          color={colorOverride}
+          color={colorOverride ? colorOverride : DARK ? "white" : "black"}
           style={{
             fontVariant: "small-caps",
           }}
@@ -80,8 +81,8 @@ const GenericSectionText: React.FC<GenericSectionTextProps> = ({
       {type === "BulletDescription" && (
         <CustomTypography
           size={"sm"}
-          color={colorOverride || "text.secondary"}
           className={`${alignmentClass} ${className ? className : ""}`}
+          color={colorOverride ? colorOverride : DARK ? "#E0E0E0" : "gray"}
         >
           {text || children}
         </CustomTypography>
@@ -92,7 +93,7 @@ const GenericSectionText: React.FC<GenericSectionTextProps> = ({
           semiBold
           fontSizeOverrides={{ xs: "sm", sm: "sm" }}
           className={`${alignmentClass} ${className ? className : ""}`}
-          color={colorOverride}
+          color={colorOverride ? colorOverride : DARK ? "white" : "black"}
           style={{
             fontVariant: "small-caps",
           }}
@@ -104,7 +105,7 @@ const GenericSectionText: React.FC<GenericSectionTextProps> = ({
         <CustomTypography
           size={"sm"}
           className={`${alignmentClass} ${className ? className : ""}`}
-          color={colorOverride}
+          color={colorOverride ? colorOverride : DARK ? "#E0E0E0" : "gray"}
         >
           {text || children}
         </CustomTypography>
@@ -112,8 +113,8 @@ const GenericSectionText: React.FC<GenericSectionTextProps> = ({
       {type === "AccordionBulletDescription" && (
         <CustomTypography
           size={"sm"}
-          color={colorOverride || "text.secondary"}
           className={`${alignmentClass} ${className ? className : ""}`}
+          color={colorOverride ? colorOverride : DARK ? "#E0E0E0" : "gray"}
         >
           {text || children}
         </CustomTypography>
@@ -124,7 +125,7 @@ const GenericSectionText: React.FC<GenericSectionTextProps> = ({
           semiBold
           fontSizeOverrides={{ xs: "md", sm: "md" }}
           className={`${alignmentClass} ${className ? className : ""}`}
-          color={colorOverride}
+          color={colorOverride ? colorOverride : DARK ? "white" : "black"}
           style={{
             fontVariant: "small-caps",
           }}
@@ -135,9 +136,9 @@ const GenericSectionText: React.FC<GenericSectionTextProps> = ({
       {type === "FooterDescription" && (
         <CustomTypography
           size="sm"
-          color={colorOverride || "text.secondary"}
           className={`${alignmentClass} ${className ? className : ""}`}
           fontSizeOverrides={{ xs: "sm", sm: "sm" }}
+          color={colorOverride ? colorOverride : DARK ? "#E0E0E0" : "gray"}
         >
           {text || children}
         </CustomTypography>

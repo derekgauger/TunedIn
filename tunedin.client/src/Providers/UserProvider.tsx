@@ -8,7 +8,7 @@ import {
 } from "../Functions/users";
 import { getMembership } from "../Functions/memberships";
 import { enqueueSnackbar } from "notistack";
-import { checkTokenExpired } from "../Utils/functions";
+import { checkTokenExpired, handleNavigation } from "../Utils/functions";
 
 interface UserProviderProps {
   children: ReactNode;
@@ -21,15 +21,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     if (checkTokenExpired()) {
       logout(true);
     } else {
-      const storedUser = localStorage.getItem("user");
-      if (storedUser) {
-        try {
-          setUser(JSON.parse(storedUser));
-        } catch (error) {
-          console.error("Error parsing stored user:", error);
-          localStorage.removeItem("user");
-        }
-      }
+      queryUser();
     }
   }, []);
 
@@ -88,8 +80,13 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
       return false;
     }
     const userInfoRequest = await sendUserInfoRequest();
+    if (userInfoRequest?.status !== 200 || !userInfoRequest?.data) {
+      setUser(null);
+      return false;
+    }
     const userData = userInfoRequest?.data;
     const membershipData = await getMembership(userData?.membership);
+
     setUser((prev) => {
       return {
         ...prev,
@@ -102,8 +99,8 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
   const logout = (fromTokenExpired = false) => {
     setUser(null);
-    localStorage.removeItem("user");
     localStorage.removeItem("token");
+    handleNavigation("/");
     if (!fromTokenExpired) {
       enqueueSnackbar("You have been logged out.", {
         variant: "info",

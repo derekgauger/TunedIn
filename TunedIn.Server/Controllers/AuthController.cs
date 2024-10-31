@@ -1,13 +1,6 @@
-using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 using LoginSystem.Backend.Models;
 using LoginSystem.Backend.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 
 namespace LoginSystem.Backend.Controllers
 {

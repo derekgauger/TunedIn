@@ -6,8 +6,9 @@ import PasswordField from "../Password/PasswordField";
 import ErrorMessage from "../../GeneralComponents/ErrorMessage/ErrorMessage";
 import GenericTextField from "../../GeneralComponents/GenericTextField";
 import CustomTypography from "../../CustomUI/CustomTypography";
-import { useNavigate } from "react-router";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { handleNavigation } from "../../../Utils/functions";
+import { DARK } from "../../../Utils/colors";
 
 interface LoginFormProps {
   handleSubmit: (values: any, { setSubmitting }: any) => void;
@@ -28,7 +29,6 @@ const LoginForm: React.FC<LoginFormProps> = ({
 }) => {
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [formKey, setFormKey] = useState(0);
-  const navigate = useNavigate();
 
   const toggleForgotPassword = () => {
     setIsForgotPassword(!isForgotPassword);
@@ -55,6 +55,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
         display: "flex",
         flexDirection: "column",
         zIndex: 1,
+        bgcolor: DARK ? "secondary.light" : "white",
       }}
     >
       <Box
@@ -68,7 +69,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
       >
         {isMobile && (
           <IconButton
-            onClick={() => navigate("/")}
+            onClick={() => handleNavigation("/")}
             sx={{
               position: "absolute",
               top: 16,
@@ -85,6 +86,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
         <CustomTypography
           size={"3xl"}
           className="text-center mb-4"
+          color={DARK ? "white" : "primary.main"}
           fontSizeOverrides={{
             xs: "3xl",
             sm: "3xl",
@@ -118,6 +120,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
                     label="Email"
                     fullWidth
                     error={triedSubmit && errors.email}
+                    isDark={DARK}
                   />
                   <ErrorMessage error={triedSubmit && errors.email} />
                 </>
@@ -129,6 +132,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
                     label="Email or Username"
                     fullWidth
                     error={triedSubmit && errors.loginIdentifier}
+                    isDark={DARK}
                   />
                   <ErrorMessage error={triedSubmit && errors.loginIdentifier} />
                   <Field
@@ -137,6 +141,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
                     fullWidth
                     component={PasswordField}
                     error={triedSubmit && errors.password}
+                    isDark={DARK}
                   />
                   <ErrorMessage error={triedSubmit && errors.password} />
                 </>

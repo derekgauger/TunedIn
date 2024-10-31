@@ -1,45 +1,72 @@
-import { Box, Button, Paper, TextField, Typography } from "@mui/material";
-import React, { useState } from "react";
+import { Box, Button, Paper } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import { emailSchema } from "./validations";
 import ErrorMessage from "../GeneralComponents/ErrorMessage/ErrorMessage";
 import { Field, Form, Formik, FormikHelpers } from "formik";
 import GenericSectionText from "../GeneralComponents/GenericSectionText";
 import GenericTextField from "../GeneralComponents/GenericTextField";
-
-interface ContactFormValues {
-  yourName: string;
-  yourEmail: string;
-  subject: string;
-  message: string;
-}
-
-const initialValues: ContactFormValues = {
-  yourName: "",
-  yourEmail: "",
-  subject: "",
-  message: "",
-};
+import { DARK } from "../../Utils/colors";
+import { EmailSettings } from "../../Utils/types";
+import { enqueueSnackbar } from "notistack";
+import { sendTemplatedEmail } from "../../Functions/email";
+import { useUser } from "../../Hooks/useUser";
+import { SENDING_EMAIL } from "../../Constants/contactInfo";
 
 const EmailForm: React.FC = () => {
   const [triedSubmit, setTriedSubmit] = useState(false);
+  const { user } = useUser();
+
+  // Create initial values once when component mounts or when user changes
+  const getInitialValues = (): EmailSettings => ({
+    name: user ? `${user.firstName} ${user.lastName}` : "",
+    email: user ? (user.verifiedEmail ? user.email : "") : "",
+    subject: "",
+    body: "",
+  });
 
   const handleSubmit = (
-    values: ContactFormValues,
-    { setSubmitting, resetForm }: FormikHelpers<ContactFormValues>
+    values: EmailSettings,
+    { setSubmitting, resetForm }: FormikHelpers<EmailSettings>
   ) => {
-    console.log("Form submitted:", values);
-    setTimeout(() => {
-      setSubmitting(false);
+    const emailParameters = {
+      Subject: values.subject,
+      Body: values.body,
+      SenderName: values.name,
+      SenderEmail: values.email,
+    };
+    const response = sendTemplatedEmail(
+      "contact",
+      SENDING_EMAIL,
+      emailParameters
+    );
+    if (response.error) {
+      enqueueSnackbar("Failed to send email. Please try again later.", {
+        variant: "error",
+      });
+    } else {
       resetForm();
-    }, 1000);
+      enqueueSnackbar("Email sent successfully! Thank you for contacting us!", {
+        variant: "success",
+      });
+    }
+    setSubmitting(false);
   };
+
   return (
-    <Paper elevation={1} sx={{ p: 2, height: "100%" }}>
+    <Paper
+      elevation={1}
+      sx={{
+        p: 2,
+        height: "100%",
+        backgroundColor: DARK ? "secondary.light" : "white",
+      }}
+    >
       <GenericSectionText text="Send us a message" type="Header" />
       <Formik
-        initialValues={initialValues}
+        initialValues={getInitialValues()}
         validationSchema={emailSchema}
         onSubmit={handleSubmit}
+        enableReinitialize // This ensures form updates when user data changes
       >
         {({ errors, isSubmitting }) => (
           <Form>
@@ -48,21 +75,23 @@ const EmailForm: React.FC = () => {
                 as={GenericTextField}
                 fullWidth
                 label="Your Name"
-                name="yourName"
-                error={triedSubmit && errors.yourName}
+                name="name"
+                error={triedSubmit && errors.name}
+                isDark={DARK}
               />
-              <ErrorMessage error={triedSubmit && errors.yourName} />
+              <ErrorMessage error={triedSubmit && errors.name} />
             </Box>
             <Box sx={{ pb: 1 }}>
               <Field
                 as={GenericTextField}
                 fullWidth
                 label="Your Email"
-                name="yourEmail"
+                name="email"
                 type="email"
-                error={triedSubmit && errors.yourEmail}
+                error={triedSubmit && errors.email}
+                isDark={DARK}
               />
-              <ErrorMessage error={triedSubmit && errors.yourEmail} />
+              <ErrorMessage error={triedSubmit && errors.email} />
             </Box>
             <Box sx={{ pb: 1 }}>
               <Field
@@ -71,6 +100,7 @@ const EmailForm: React.FC = () => {
                 label="Subject"
                 name="subject"
                 error={triedSubmit && errors.subject}
+                isDark={DARK}
               />
               <ErrorMessage error={triedSubmit && errors.subject} />
             </Box>
@@ -79,12 +109,13 @@ const EmailForm: React.FC = () => {
                 as={GenericTextField}
                 fullWidth
                 label="Message"
-                name="message"
+                name="body"
                 multiline
                 rows={8}
-                error={triedSubmit && errors.message}
+                error={triedSubmit && errors.body}
+                isDark={DARK}
               />
-              <ErrorMessage error={triedSubmit && errors.message} />
+              <ErrorMessage error={triedSubmit && errors.body} />
             </Box>
             <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
               <Button

@@ -9,7 +9,8 @@ import InputMask from "react-input-mask";
 import GenericTextField from "../../GeneralComponents/GenericTextField";
 import CustomTypography from "../../CustomUI/CustomTypography";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { useNavigate } from "react-router";
+import { handleNavigation } from "../../../Utils/functions";
+import { DARK } from "../../../Utils/colors";
 
 interface RegisterFormProps {
   handleSubmit: (values: any, { setSubmitting }: any) => void;
@@ -26,7 +27,6 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
   isMobile,
   toggleForm,
 }) => {
-  const navigate = useNavigate();
 
   return (
     <Box
@@ -41,11 +41,12 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
         display: "flex",
         flexDirection: "column",
         zIndex: 1,
+        bgcolor: DARK ? "secondary.light" : "white",
       }}
     >
       {isMobile && (
         <IconButton
-          onClick={() => navigate("/")}
+          onClick={() => handleNavigation("/")}
           sx={{
             position: "absolute",
             top: 16,
@@ -79,6 +80,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
             xl: "3xl",
             "2xl": "3xl",
           }}
+          color="white"
         >
           Register Account
         </CustomTypography>
@@ -105,6 +107,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
                     label="First Name"
                     fullWidth
                     error={triedSubmit && errors.firstName}
+                    isDark={DARK}
                   />
                   <ErrorMessage error={triedSubmit && errors.firstName} />
                 </Grid>
@@ -115,6 +118,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
                     label="Last Name"
                     fullWidth
                     error={triedSubmit && errors.lastName}
+                    isDark={DARK}
                   />
                   <ErrorMessage error={triedSubmit && errors.lastName} />
                 </Grid>
@@ -127,6 +131,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
                     label="Username"
                     fullWidth
                     error={triedSubmit && errors.username}
+                    isDark={DARK}
                   />
                   <ErrorMessage error={triedSubmit && errors.username} />
                 </Grid>
@@ -141,6 +146,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
                             label="Phone Number"
                             fullWidth
                             error={triedSubmit && errors.phoneNumber}
+                            isDark={DARK}
                           />
                         )}
                       </InputMask>
@@ -155,6 +161,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
                 label="Email"
                 fullWidth
                 error={triedSubmit && errors.email}
+                isDark={DARK}
               />
               <ErrorMessage error={triedSubmit && errors.email} />
 
@@ -164,6 +171,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
                 fullWidth
                 component={PasswordField}
                 error={triedSubmit && errors.password}
+                isDark={DARK}
               />
               <ErrorMessage error={triedSubmit && errors.password} />
 
@@ -173,6 +181,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
                 fullWidth
                 component={PasswordField}
                 error={triedSubmit && errors.confirmPassword}
+                isDark={DARK}
               />
               <ErrorMessage error={triedSubmit && errors.confirmPassword} />
 

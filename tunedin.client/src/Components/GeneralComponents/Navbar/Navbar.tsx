@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import {
   AppBar,
   Toolbar,
@@ -26,13 +26,8 @@ import {
   Menu as MenuIcon,
 } from "@mui/icons-material";
 import { useUser } from "../../../Hooks/useUser";
-import { scrollToTop } from "../../../Utils/functions";
+import { handleNavigation, scrollToTop } from "../../../Utils/functions";
 import CustomTypography from "../../CustomUI/CustomTypography";
-
-interface StyledAppBarProps {
-  trigger: boolean;
-  isHome: boolean;
-}
 
 const StyledAppBar = styled(AppBar, {
   shouldForwardProp: (prop) => prop !== "trigger" && prop !== "isHome",
@@ -136,7 +131,6 @@ const ScrollTop: React.FC<{ children: React.ReactElement }> = ({
 const Navbar: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useUser();
   const theme = useTheme();
@@ -147,6 +141,7 @@ const Navbar: React.FC = () => {
     { name: "About", path: "/about", permission: true },
     { name: "Gallery", path: "/gallery", permission: true },
     { name: "Sevices", path: "/services", permission: true },
+    { name: "Forms", path: "/forms", permission: true },
     { name: "Contact", path: "/contact", permission: true },
     {
       name: "Manage Profiles",
@@ -163,9 +158,8 @@ const Navbar: React.FC = () => {
   const isHome = location.pathname === "/";
   const isSignIn = location.pathname === "/sign-in";
 
-  const handleNavigation = (path: string) => {
-    navigate(path);
-    scrollToTop();
+  const handleNavigationLocal = (path: string) => {
+    handleNavigation(path);
     setAnchorEl(null);
     setMobileOpen(false);
   };
@@ -181,7 +175,6 @@ const Navbar: React.FC = () => {
   const handleLogout = () => {
     logout();
     setMobileOpen(false);
-    navigate("/");
   };
 
   const handleDrawerToggle = () => {
@@ -192,26 +185,30 @@ const Navbar: React.FC = () => {
     <Box sx={{ width: 250, bgcolor: "rgba(0, 0, 0, 0.9)", height: "100%" }}>
       <List>
         {navItems.map((item) => (
-          <ListItem
-            key={item.name}
-            onClick={() => handleNavigation(item.path)}
-            sx={{
-              borderBottom:
-                location.pathname === item.path
-                  ? `2px solid ${theme.palette.primary.dark}`
-                  : "none",
-              color: "white",
-              "&:hover": {
-                backgroundColor: "rgba(255, 255, 255, 0.1)",
-              },
-            }}
-          >
-            <ListItemText primary={item.name} />
-          </ListItem>
+          <div>
+            {item.permission && (
+              <ListItem
+                key={item.name}
+                onClick={() => handleNavigationLocal(item.path)}
+                sx={{
+                  borderBottom:
+                    location.pathname === item.path
+                      ? `2px solid ${theme.palette.primary.dark}`
+                      : "none",
+                  color: "white",
+                  "&:hover": {
+                    backgroundColor: "rgba(255, 255, 255, 0.1)",
+                  },
+                }}
+              >
+                <ListItemText primary={item.name} />
+              </ListItem>
+            )}
+          </div>
         ))}
         {user ? (
           <>
-            <ListItem onClick={() => handleNavigation("/profile")}>
+            <ListItem onClick={() => handleNavigationLocal("/profile")}>
               <ListItemText primary="Profile" sx={{ color: "white" }} />
             </ListItem>
             <ListItem onClick={handleLogout}>
@@ -219,7 +216,7 @@ const Navbar: React.FC = () => {
             </ListItem>
           </>
         ) : (
-          <ListItem onClick={() => handleNavigation("/sign-in")}>
+          <ListItem onClick={() => handleNavigationLocal("/sign-in")}>
             <ListItemText primary="Sign In" sx={{ color: "white" }} />
           </ListItem>
         )}
@@ -240,7 +237,7 @@ const Navbar: React.FC = () => {
                   flexGrow: 1,
                   cursor: "pointer",
                 }}
-                onClick={() => handleNavigation("/")}
+                onClick={() => handleNavigationLocal("/")}
               >
                 <Logo src="/logo.png" alt="TI Logo" />
                 <CustomTypography
@@ -270,14 +267,14 @@ const Navbar: React.FC = () => {
                       (location.pathname === item.path ? (
                         <ActiveNavButton
                           key={item.name}
-                          onClick={() => handleNavigation(item.path)}
+                          onClick={() => handleNavigationLocal(item.path)}
                         >
                           {item.name}
                         </ActiveNavButton>
                       ) : (
                         <NavButton
                           key={item.name}
-                          onClick={() => handleNavigation(item.path)}
+                          onClick={() => handleNavigationLocal(item.path)}
                         >
                           {item.name}
                         </NavButton>
@@ -308,14 +305,18 @@ const Navbar: React.FC = () => {
                         onClose={handleClose}
                         disableScrollLock
                       >
-                        <MenuItem onClick={() => handleNavigation("/profile")}>
+                        <MenuItem
+                          onClick={() => handleNavigationLocal("/profile")}
+                        >
                           Profile
                         </MenuItem>
                         <MenuItem onClick={handleLogout}>Logout</MenuItem>
                       </Menu>
                     </Box>
                   ) : (
-                    <NavButton onClick={() => handleNavigation("/sign-in")}>
+                    <NavButton
+                      onClick={() => handleNavigationLocal("/sign-in")}
+                    >
                       Sign In
                     </NavButton>
                   )}

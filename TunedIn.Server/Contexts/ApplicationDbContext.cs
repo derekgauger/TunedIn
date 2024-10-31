@@ -12,6 +12,7 @@ namespace TunedIn.Server.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<Membership> Memberships { get; set; }
+        public DbSet<FormModel> Forms { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

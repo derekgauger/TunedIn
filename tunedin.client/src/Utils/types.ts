@@ -11,6 +11,8 @@ export type User = {
   membershipData?: Membership;
   avatar: string;
   isAdmin: boolean;
+  verifiedPhone: boolean;
+  verifiedEmail: boolean;
 };
 
 export type Membership = {
@@ -19,6 +21,9 @@ export type Membership = {
   features: string[];
   color: string;
   image: string;
+  description: string;
+  testimonial: string;
+  testimonialAuthor: string;
 };
 
 export type AboutCompanyInfoData = {
@@ -53,4 +58,26 @@ export type RedirectCardData = {
   buttonText: string;
   icon: React.ElementType;
   backgroundImage?: string;
+};
+
+export type EmailSettings = {
+  name: string;
+  email: string;
+  subject: string;
+  body: string;
+  templateName?: string;
+};
+
+export type FileData = {
+  id: number;
+  fileName: string;
+  contentType: string;
+  fileSize: number;
+  uploadDate: string;
+  userId: number;
+};
+
+export type FilePreview = {
+  id: number;
+  url: string;
 };

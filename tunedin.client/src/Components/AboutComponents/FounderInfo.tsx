@@ -3,30 +3,32 @@ import React from "react";
 import { AboutFounderData, AboutListItemData } from "../../Utils/types";
 import { EmojiObjects, Person, Work } from "@mui/icons-material";
 import GenericSectionText from "../GeneralComponents/GenericSectionText";
+import { DARK } from "../../Utils/colors";
 
 interface FounderInfoData {
   renderListItems: (items: AboutListItemData[]) => JSX.Element;
 }
 
 const founderInfo: AboutFounderData = {
-  name: "Jane Doe",
+  name: "Randy Gauger",
   description:
-    "Jane Doe is a visionary entrepreneur with over 20 years of experience in the tech industry. Her passion for innovation and problem-solving led her to found our company with the mission of revolutionizing the way businesses operate in the digital age.",
-  image: "https://picsum.photos/150",
+    "Fitness maniac, tech enthusiast, and serial entrepreneur. Randy is the driving force behind TunedIn, bringing a wealth of experience and a passion for innovation to the table. His vision has guided the company from its humble beginnings to its current position as a leader in the industry. When he's not busy revolutionizing the world of fitness tech, you can find Randy hitting the gym, exploring the great outdoors, or spending time with his family.",
+  image:
+    "https://media.licdn.com/dms/image/v2/D4D03AQFvIlL-Hudb2A/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1729696487641?e=1735776000&v=beta&t=TJxHm6fKkkE6MISWUHZNaMn0-tlpCdvba17FToDmxMc",
   journey: [
     {
       icon: <Work />,
-      primary: "Tech Innovator",
+      primary: "Part-time Gorilla",
       secondary: "Developed patented technologies",
     },
     {
       icon: <Person />,
-      primary: "Mentor",
+      primary: "Full-time Beard Grower",
       secondary: "Guides aspiring entrepreneurs",
     },
     {
       icon: <EmojiObjects />,
-      primary: "Thought Leader",
+      primary: "Thot Leader",
       secondary: "Regular speaker at industry conferences",
     },
   ],
@@ -34,7 +36,7 @@ const founderInfo: AboutFounderData = {
 
 const FounderInfo: React.FC<FounderInfoData> = ({ renderListItems }) => {
   return (
-    <Paper elevation={3} sx={{ p: 2 }}>
+    <Paper elevation={3} sx={{ p: 4, backgroundColor: DARK ? "secondary.light" : "white" }}>
       <GenericSectionText text="Meet Our Founder" type="Header" />
       <Grid container spacing={2} mt={0}>
         <Grid item xs={12} md={4}>

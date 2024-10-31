@@ -30,8 +30,8 @@ namespace TunedIn.Server.Services
         public async Task<Membership> GetMembershipByTitleAsync(string title)
         {
             return await _context.Memberships
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.Title == title);
+            .AsNoTracking()
+            .FirstOrDefaultAsync(m => m.Title.ToLower() == title.ToLower());
         }
     }
 }

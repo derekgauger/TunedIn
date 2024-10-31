@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  Typography,
   List,
   ListItem,
   ListItemIcon,
@@ -21,10 +20,18 @@ import ContainerPaper from "../../Components/GeneralComponents/ContainerPaper/Co
 import { useLocation } from "react-router-dom";
 import GenericSectionText from "../../Components/GeneralComponents/GenericSectionText";
 import CustomTypography from "../../Components/CustomUI/CustomTypography";
+import { Membership } from "../../Utils/types";
+import { getMembership } from "../../Functions/memberships";
+import { enqueueSnackbar } from "notistack";
+import LoadingIcon from "../../Components/GeneralComponents/LoadingIcon/LoadingIcon";
+import { useUser } from "../../Hooks/useUser";
+import { handleNavigation } from "../../Utils/functions";
+import { DARK } from "../../Utils/colors";
 
 const SectionPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(3),
   marginBottom: theme.spacing(3),
+  backgroundColor: DARK ? theme.palette.secondary.light : "white",
 }));
 
 const PlanImage = styled("img")({
@@ -33,32 +40,33 @@ const PlanImage = styled("img")({
   objectFit: "cover",
 });
 
-const SectionTitle = styled(Typography)(({ theme }) => ({
-  marginBottom: theme.spacing(2),
-  fontWeight: 600,
-}));
-
-export type Membership = {
-  title: string;
-  price: string;
-  features: string[];
-  color: string;
-  image: string;
-  description: string;
-};
-
 const PlanDetails: React.FC = () => {
+  const [plan, setPlan] = useState<Membership | null>(null);
+  const [loading, setLoading] = useState(true);
   const location = useLocation();
-  const [plan, setPlan] = useState<Membership>({
-    ...location.state?.additionalData,
-    description:
-      "Experience the ultimate fitness journey with our comprehensive plan. Designed to meet your unique needs, this plan combines expert guidance, state-of-the-art facilities, and a supportive community to help you achieve your fitness goals.",
-  });
+  const { user } = useUser();
 
-  const testimonial = {
-    text: "This fitness plan has completely transformed my life! I've never felt stronger or more confident. The trainers are exceptional and the community is so supportive.",
-    author: "Sarah J., Member since 2023",
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      const splitPath = location.pathname.split("/");
+      const currentPlanNameFromURL = splitPath[splitPath.length - 1];
+      const currentPlanName = currentPlanNameFromURL.replace("-", " ");
+      const currentPlan = await getMembership(currentPlanName);
+      if (currentPlan) {
+        setPlan(currentPlan.data);
+      } else {
+        enqueueSnackbar(
+          "Failed to get membership details. Please try again later.",
+          {
+            variant: "error",
+          }
+        );
+      }
+      setLoading(false);
+    };
+    fetchData();
+  }, []);
 
   const qualifications = [
     {
@@ -78,6 +86,24 @@ const PlanDetails: React.FC = () => {
       icon: <AccessTimeIcon />,
     },
   ];
+
+  const handleSignUp = () => {
+    if (user) {
+      console.log("Sign up button clicked");
+    } else {
+      enqueueSnackbar(
+        "Please sign in or register an account to sign up for a plan",
+        {
+          variant: "info",
+        }
+      );
+      handleNavigation("/sign-in");
+    }
+  };
+
+  if (loading) {
+    return <LoadingIcon />;
+  }
 
   return (
     <ContainerPaper>
@@ -103,37 +129,38 @@ const PlanDetails: React.FC = () => {
                   fontVariant: "small-caps",
                 }}
               >
-                {plan.title}
+                {plan?.title}
               </CustomTypography>
               <CustomTypography
-                size={"lg"}
+                size={"md"}
                 fontSizeOverrides={{
-                  xs: "lg",
-                  sm: "lg",
-                  md: "lg",
-                  lg: "xl",
-                  xl: "xl",
-                  "2xl": "2xl",
+                  xs: "md",
+                  sm: "md",
+                  md: "md",
+                  lg: "lg",
+                  xl: "lg",
+                  "2xl": "xl",
                 }}
-                color="black"
+                color={DARK ? "white" : "#E0E0E0"}
                 style={{ marginBottom: "1rem" }}
               >
-                {plan.price}
+                {plan?.price}
               </CustomTypography>
-              <GenericSectionText text={plan.description} type="Description" />
+              <GenericSectionText text={plan?.description} type="Description" />
               <Button
                 variant="contained"
                 size="large"
                 color="primary"
                 fullWidth
                 sx={{ mt: "auto" }}
+                onClick={handleSignUp}
               >
                 Sign Up Now
               </Button>
             </Box>
           </Grid>
           <Grid item xs={12} md={6}>
-            <PlanImage src={plan.image} alt={plan.title} />
+            <PlanImage src={plan?.image} alt={plan?.title} />
           </Grid>
         </Grid>
       </SectionPaper>
@@ -141,7 +168,7 @@ const PlanDetails: React.FC = () => {
       <SectionPaper elevation={3}>
         <GenericSectionText text="What's Included" type="Header" />
         <Grid container spacing={2}>
-          {plan.features.map((feature, index) => (
+          {plan?.features.map((feature, index) => (
             <Grid item xs={12} sm={6} md={4} key={index}>
               <ListItem>
                 <ListItemIcon>
@@ -189,9 +216,9 @@ const PlanDetails: React.FC = () => {
             <FormatQuoteIcon fontSize="large" color="primary" />
           </Grid>
           <Grid item xs>
-            <GenericSectionText text={testimonial.text} type="Description" />
+            <GenericSectionText text={plan?.testimonial} type="Description" />
             <GenericSectionText
-              text={`-${testimonial.author}`}
+              text={`-${plan?.testimonialAuthor}`}
               type="BulletHeader"
               className="mt-2"
             />

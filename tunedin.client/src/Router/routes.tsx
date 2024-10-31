@@ -8,6 +8,7 @@ import Profile from "../Pages/Profile/Profile";
 import Store from "../Pages/Store/Store";
 import PlanDetails from "../Pages/PlanDetails/PlanDetails";
 import ProfilesList from "../Components/ManageProfilesComponents/ProfilesList";
+import Forms from "../Components/FormsComponents/Forms";
 
 export const routes = [
   {
@@ -31,6 +32,10 @@ export const routes = [
     element: <PlanDetails />,
   },
   {
+    path: "/forms",
+    element: <Forms />,
+  },
+  {
     path: "/contact",
     element: <Contact />,
   },
@@ -46,6 +51,11 @@ export const routes = [
   {
     path: "/manage-profiles",
     element: <ProfilesList />,
+    exact: true,
+  },
+  {
+    path: "/manage-profiles/:profile_id",
+    element: <Profile viewingAsAdmin />,
     exact: true,
   },
   {

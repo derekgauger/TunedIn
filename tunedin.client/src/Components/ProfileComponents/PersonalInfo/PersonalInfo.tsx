@@ -1,14 +1,20 @@
 import { Avatar, Box, Button, Paper } from "@mui/material";
 import React from "react";
-import { useUser } from "../../../Hooks/useUser";
 import { enqueueSnackbar } from "notistack";
 import GenericSectionText from "../../GeneralComponents/GenericSectionText";
+import { User } from "../../../Utils/types";
+import { DARK } from "../../../Utils/colors";
 
-const PersonalInfo: React.FC = () => {
-  const { user } = useUser();
+interface PersonalInfoProps {
+  userDetails: User | undefined;
+}
 
+const PersonalInfo: React.FC<PersonalInfoProps> = ({ userDetails }) => {
   return (
-    <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
+    <Paper
+      elevation={3}
+      sx={{ p: 3, mb: 4, backgroundColor: DARK ? "secondary.light" : "white" }}
+    >
       <Box
         sx={{
           display: "flex",
@@ -18,8 +24,8 @@ const PersonalInfo: React.FC = () => {
         }}
       >
         <Avatar
-          src={user?.avatar}
-          alt={`${user?.firstName} ${user?.lastName}`}
+          src={userDetails?.avatar}
+          alt={`${userDetails?.firstName} ${userDetails?.lastName}`}
           sx={{ width: 150, height: 150, mb: 2 }}
         />
         <Button variant="outlined" component="label" sx={{ mb: 2 }}>
@@ -36,13 +42,13 @@ const PersonalInfo: React.FC = () => {
         </Button>
       </Box>
       <GenericSectionText type="Header">
-        {user?.firstName} {user?.lastName}
+        {userDetails?.firstName} {userDetails?.lastName}
       </GenericSectionText>
       <GenericSectionText type="AccordionBulletDescription">
-        Member since: {user?.createdAt}
+        Member since: {userDetails?.createdAt}
       </GenericSectionText>
       <GenericSectionText type="Description" className="break-all">
-        Goal: {user?.goal ? user?.goal : "No goal set"}
+        Goal: {userDetails?.goal ? userDetails?.goal : "No goal set"}
       </GenericSectionText>
     </Paper>
   );

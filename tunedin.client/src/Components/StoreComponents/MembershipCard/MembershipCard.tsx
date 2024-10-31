@@ -8,45 +8,62 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  Typography,
+  useTheme,
 } from "@mui/material";
 import { CheckIcon } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { scrollToTop } from "../../../Utils/functions";
+import { handleNavigation } from "../../../Utils/functions";
 import { Membership } from "../../../Utils/types";
 import CustomTypography from "../../CustomUI/CustomTypography";
+import { DARK } from "../../../Utils/colors";
 
 interface MembershipCardProps {
-  option: Membership;
+  option: Membership | undefined;
   isCurrent?: boolean;
+  isOnModal?: boolean;
+  isSelected?: boolean;
+  onClick?: () => void;
 }
 
 const MembershipCard: React.FC<MembershipCardProps> = ({
   option,
   isCurrent,
+  isOnModal,
+  isSelected,
+  onClick,
 }) => {
-  const navigate = useNavigate();
-
-  const handleNavigation = (path: string | undefined) => {
-    navigate(path ? path : "/", { state: { additionalData: option } });
-    scrollToTop();
-  };
+  const theme = useTheme();
 
   return (
     <Card
+      onClick={onClick}
       sx={{
         height: "100%",
         display: "flex",
         flexDirection: "column",
-        borderTop: `4px solid ${option.color}`,
+        backgroundColor: DARK
+          ? !isCurrent || isOnModal
+            ? "secondary.light"
+            : "secondary.main"
+          : "white",
+        boxShadow: 3,
+        p: 2,
+        cursor: isOnModal && !isCurrent ? "pointer" : undefined,
+        transition: isOnModal && !isCurrent ? "transform 0.2s" : "none",
+        "&:hover": {
+          transform: isOnModal && !isCurrent ? "scale(1.02)" : "none",
+        },
+        borderRadius: isSelected ? 1 : 0,
+        border: isSelected ? `2px solid ${theme.palette.primary.main}` : "none",
       }}
     >
-      <CardMedia
-        component="img"
-        height="200"
-        image={option.image}
-        alt={`${option.title} image`}
-      />
+      {!isCurrent && (
+        <CardMedia
+          component="img"
+          height="200"
+          image={option?.image}
+          alt={`${option?.title} image`}
+        />
+      )}
       <CardContent sx={{ flexGrow: 1 }}>
         <CustomTypography
           bold
@@ -59,9 +76,9 @@ const MembershipCard: React.FC<MembershipCardProps> = ({
             xl: "xl",
             "2xl": "2xl",
           }}
-          color={option.color}
+          color="white"
         >
-          {option.title}
+          {option?.title}
         </CustomTypography>
         <CustomTypography
           size={"md"}
@@ -73,15 +90,15 @@ const MembershipCard: React.FC<MembershipCardProps> = ({
             xl: "md",
             "2xl": "lg",
           }}
-          color="text.secondary"
+          color="#E0E0E0"
         >
-          {option.price}
+          {option?.price}
         </CustomTypography>
         <List>
-          {option.features.map((feature, index) => (
+          {option?.features.map((feature, index) => (
             <ListItem key={index} disablePadding>
               <ListItemIcon sx={{ color: "primary.main" }}>
-                <CheckIcon className={`text-[${option.color}]`} />
+                <CheckIcon />
               </ListItemIcon>
               <ListItemText
                 primary={
@@ -95,7 +112,7 @@ const MembershipCard: React.FC<MembershipCardProps> = ({
                       xl: "md",
                       "2xl": "lg",
                     }}
-                    color="text.secondary"
+                    color="#E0E0E0"
                   >
                     {feature}
                   </CustomTypography>
@@ -110,18 +127,15 @@ const MembershipCard: React.FC<MembershipCardProps> = ({
           <Button
             onClick={() =>
               handleNavigation(
-                `/services/${option.title.replace(" ", "-").toLowerCase()}`
+                `/services/${option?.title.replace(" ", "-").toLowerCase()}`
               )
             }
             size="large"
             fullWidth
             variant="contained"
-            sx={{
-              bgcolor: option.color,
-              "&:hover": { bgcolor: option.color },
-            }}
+            color="primary"
           >
-            Choose Plan
+            View Membership Information
           </Button>
         </CardActions>
       )}

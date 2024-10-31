@@ -14,6 +14,7 @@ import { AboutListItemData, AboutSectionData } from "../../Utils/types";
 import CompanyInfo from "../../Components/AboutComponents/CompanyInfo";
 import FounderInfo from "../../Components/AboutComponents/FounderInfo";
 import GenericSectionText from "../../Components/GeneralComponents/GenericSectionText";
+import { DARK } from "../../Utils/colors";
 
 const mission: AboutSectionData = {
   title: "Our Mission",
@@ -86,7 +87,10 @@ const About: React.FC = () => {
 
   const renderSection = (section: AboutSectionData) => (
     <Grid item xs={12} key={section.title}>
-      <Paper elevation={3} sx={{ p: 2 }}>
+      <Paper
+        elevation={3}
+        sx={{ p: 4, backgroundColor: DARK ? "secondary.light" : "white" }}
+      >
         <GenericSectionText
           text={section.title}
           type={"Header"}

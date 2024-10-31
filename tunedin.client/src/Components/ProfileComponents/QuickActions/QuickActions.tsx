@@ -1,4 +1,4 @@
-import { Button, Paper, styled, Typography } from "@mui/material";
+import { Button, Paper, styled } from "@mui/material";
 import React from "react";
 import {
   CreditCard,
@@ -7,6 +7,8 @@ import {
   Delete,
 } from "@mui/icons-material";
 import GenericSectionText from "../../GeneralComponents/GenericSectionText";
+import { DARK } from "../../../Utils/colors";
+import { User } from "../../../Utils/types";
 
 const QuickActionButton = styled(Button)(({ theme }) => ({
   marginBottom: theme.spacing(1),
@@ -14,34 +16,48 @@ const QuickActionButton = styled(Button)(({ theme }) => ({
 }));
 
 interface QuickActionsProps {
+  userDetails: User | undefined;
   setOpenNotificationPreferences: React.Dispatch<React.SetStateAction<boolean>>;
   setOpenDeletePopup: React.Dispatch<React.SetStateAction<boolean>>;
   setOpenChangePassword: React.Dispatch<React.SetStateAction<boolean>>;
+  setOpenChangeMembershipModal: React.Dispatch<React.SetStateAction<boolean>>;
+  setOpenCancelMembershipPopup: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const QuickActions: React.FC<QuickActionsProps> = ({
+  userDetails,
   setOpenNotificationPreferences,
   setOpenDeletePopup,
   setOpenChangePassword,
+  setOpenChangeMembershipModal,
+  setOpenCancelMembershipPopup,
 }) => {
   return (
-    <Paper elevation={3} sx={{ p: 3 }}>
-      <GenericSectionText text="Quick Actions" type="Header" />
-      <QuickActionButton
-        variant="outlined"
-        color="primary"
-        startIcon={<CreditCard />}
-        sx={{ mt: 2 }}
-      >
-        Change Membership
-      </QuickActionButton>
-      <QuickActionButton
-        variant="outlined"
-        color="error"
-        startIcon={<CreditCard />}
-      >
-        Cancel Membership
-      </QuickActionButton>
+    <Paper
+      elevation={3}
+      sx={{ p: 3, backgroundColor: DARK ? "secondary.light" : "white" }}
+    >
+      <GenericSectionText text="Quick Actions" type="Header" className="mb-4" />
+      {userDetails?.membershipData && (
+        <div>
+          <QuickActionButton
+            variant="outlined"
+            color="primary"
+            startIcon={<CreditCard />}
+            onClick={() => setOpenChangeMembershipModal(true)}
+          >
+            Request Membership Change
+          </QuickActionButton>
+          <QuickActionButton
+            variant="outlined"
+            color="error"
+            startIcon={<CreditCard />}
+            onClick={() => setOpenCancelMembershipPopup(true)}
+          >
+            Request Membership Cancellation
+          </QuickActionButton>
+        </div>
+      )}
       <QuickActionButton
         variant="outlined"
         color="primary"

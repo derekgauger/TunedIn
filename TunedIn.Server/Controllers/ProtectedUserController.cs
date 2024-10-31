@@ -10,11 +10,11 @@ namespace LoginSystem.Backend.Controllers
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class ProtectedController : ControllerBase
+    public class ProtectedUserController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
-        public ProtectedController(ApplicationDbContext context)
+        public ProtectedUserController(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -22,6 +22,13 @@ namespace LoginSystem.Backend.Controllers
         [HttpGet("all-users")]
         public async Task<IActionResult> GetAllUsers()
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var requestingUser = await _context.Users.FindAsync(int.Parse(userId));
+            if (requestingUser == null || !requestingUser.IsAdmin)
+            {
+                return Forbid("You do not have permission to access this resource.");
+            }
+
             var users = await _context.Users.Select(user => new
             {
                 user.Id,
@@ -39,8 +46,8 @@ namespace LoginSystem.Backend.Controllers
             return Ok(users);
         }
 
-        [HttpGet("user-info")]
-        public async Task<IActionResult> GetUserInfo()
+        [HttpGet("user-by-username")]
+        public async Task<IActionResult> GetUserByEmail([FromQuery] string Username)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userId))
@@ -48,12 +55,18 @@ namespace LoginSystem.Backend.Controllers
                 return Unauthorized();
             }
 
-            if (!int.TryParse(userId, out int userIdInt))
+            var requestingUser = await _context.Users.FindAsync(int.Parse(userId));
+            if (requestingUser == null || !requestingUser.IsAdmin)
             {
-                return BadRequest("Invalid user ID format.");
+                return Forbid("You do not have permission to access this resource.");
             }
 
-            var user = await _context.Users.FindAsync(userIdInt);
+            if (string.IsNullOrEmpty(Username))
+            {
+                return BadRequest("Username is required.");
+            }
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == Username);
             if (user == null)
             {
                 return NotFound("User not found");
@@ -70,7 +83,59 @@ namespace LoginSystem.Backend.Controllers
                 user.Goal,
                 user.CreatedAt,
                 user.Membership,
-                user.IsAdmin
+                user.IsAdmin,
+                user.VerifiedEmail,
+                user.VerifiedPhone
+            };
+
+            return Ok(userInfo);
+        }
+
+        [HttpGet("user-info")]
+        public async Task<IActionResult> GetUserInfo()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized();
+            }
+
+            if (!int.TryParse(userId, out int userIdInt))
+            {
+                return BadRequest("Invalid user ID format.");
+            }
+
+            var requestingUser = await _context.Users.FindAsync(userIdInt);
+            if (requestingUser == null)
+            {
+                return NotFound("Requesting user not found");
+            }
+
+            var user = await _context.Users.FindAsync(userIdInt);
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            if (!requestingUser.IsAdmin && requestingUser.Id != user.Id)
+            {
+                return Forbid("You do not have permission to access this resource.");
+            }
+
+            var userInfo = new
+            {
+                user.Id,
+                user.Username,
+                user.Email,
+                user.FirstName,
+                user.LastName,
+                user.PhoneNumber,
+                user.Goal,
+                user.CreatedAt,
+                user.Membership,
+                user.IsAdmin,
+                user.VerifiedEmail,
+                user.VerifiedPhone
             };
 
             return Ok(userInfo);
@@ -90,12 +155,18 @@ namespace LoginSystem.Backend.Controllers
                 return BadRequest("Invalid user ID format.");
             }
 
-            if (userIdInt != updatedUser.Id)
+            var requestingUser = await _context.Users.FindAsync(userIdInt);
+            if (requestingUser == null)
             {
-                return Forbid();
+                return NotFound("Requesting user not found");
             }
 
-            var user = await _context.Users.FindAsync(userIdInt);
+            if (!requestingUser.IsAdmin && userIdInt != updatedUser.Id)
+            {
+                return Forbid("You do not have permission to update this user.");
+            }
+
+            var user = await _context.Users.FindAsync(updatedUser.Id);
             if (user == null)
             {
                 return NotFound("User not found");
@@ -108,6 +179,7 @@ namespace LoginSystem.Backend.Controllers
             user.LastName = updatedUser.LastName;
             user.PhoneNumber = updatedUser.PhoneNumber;
             user.Goal = updatedUser.Goal;
+            user.Membership = updatedUser.Membership;
 
             try
             {
@@ -121,7 +193,7 @@ namespace LoginSystem.Backend.Controllers
         }
 
         [HttpDelete("delete-account")]
-        public async Task<IActionResult> DeleteAccount()
+        public async Task<IActionResult> DeleteAccount([FromQuery] string usernameToDelete)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userId))
@@ -134,7 +206,18 @@ namespace LoginSystem.Backend.Controllers
                 return BadRequest("Invalid user ID format.");
             }
 
-            var user = await _context.Users.FindAsync(userIdInt);
+            var requestingUser = await _context.Users.FindAsync(userIdInt);
+            if (requestingUser == null)
+            {
+                return NotFound("Requesting user not found");
+            }
+
+            if (!requestingUser.IsAdmin && requestingUser.Username != usernameToDelete)
+            {
+                return Forbid("You do not have permission to delete this user.");
+            }
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == usernameToDelete);
             if (user == null)
             {
                 return NotFound("User not found");
@@ -151,28 +234,6 @@ namespace LoginSystem.Backend.Controllers
             {
                 return StatusCode(500, "An error occurred while deleting the user account.");
             }
-        }
-
-        [HttpGet("protected-resource")]
-        public async Task<IActionResult> GetProtectedResource()
-        {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId))
-            {
-                return Unauthorized();
-            }
-
-            var user = await _context.Users.FindAsync(userId);
-            if (user == null)
-            {
-                return NotFound("User not found");
-            }
-
-            // Here you can use the user object to fetch user-specific data or perform user-specific actions
-            // For example:
-            // var userSpecificData = await _context.UserData.Where(d => d.UserId == userId).ToListAsync();
-
-            return Ok($"Access granted to protected resource for user: {user.Username}");
         }
     }
 }

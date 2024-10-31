@@ -1,31 +1,34 @@
-import { Box, Button, Paper, Typography } from "@mui/material";
+import { Box, Button, Paper } from "@mui/material";
 import React from "react";
 import MembershipCard from "../../StoreComponents/MembershipCard/MembershipCard";
-import { useUser } from "../../../Hooks/useUser";
-import { useNavigate } from "react-router";
-import { scrollToTop } from "../../../Utils/functions";
 import GenericSectionText from "../../GeneralComponents/GenericSectionText";
+import { User } from "../../../Utils/types";
+import { DARK } from "../../../Utils/colors";
 
-const CurrentMembershipSection: React.FC = () => {
-  const { user } = useUser();
+interface CurrentMembershipSectionProps {
+  userDetails: User | undefined;
+  openChangeMembershipModal: React.Dispatch<React.SetStateAction<boolean>>;
+  openCancelMembershipPopup: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
-  const navigate = useNavigate();
-
-  const handleNavigation = (path: string) => {
-    navigate(path);
-    scrollToTop();
-  };
-
+const CurrentMembershipSection: React.FC<CurrentMembershipSectionProps> = ({
+  userDetails,
+  openChangeMembershipModal,
+  openCancelMembershipPopup,
+}) => {
   return (
-    <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
+    <Paper
+      elevation={3}
+      sx={{ p: 3, mb: 4, backgroundColor: DARK ? "secondary.light" : "white" }}
+    >
       <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
         {/* Current Membership */}
         <Box sx={{ mb: 3 }}>
-          <GenericSectionText type="Header">
+          <GenericSectionText type="Header" className="mb-2">
             Current Membership
           </GenericSectionText>
-          {user?.membershipData ? (
-            <MembershipCard option={user?.membershipData} isCurrent />
+          {userDetails?.membershipData ? (
+            <MembershipCard option={userDetails?.membershipData} isCurrent />
           ) : (
             <GenericSectionText type="Description">
               You do not have a membership
@@ -36,13 +39,21 @@ const CurrentMembershipSection: React.FC = () => {
           <Button
             variant="contained"
             color="primary"
-            onClick={() => handleNavigation("/services")}
+            onClick={() => {
+              openChangeMembershipModal(true);
+            }}
           >
-            {user?.membershipData ? "Change Membership" : "Get Membership"}
+            {userDetails?.membershipData
+              ? "Request Membership Change"
+              : "Get Membership"}
           </Button>
-          {user?.membershipData && (
-            <Button variant="outlined" color="error">
-              Cancel Membership
+          {userDetails?.membershipData && (
+            <Button
+              variant="outlined"
+              color="error"
+              onClick={() => openCancelMembershipPopup(true)}
+            >
+              Request Membership Cancellation
             </Button>
           )}
         </Box>
