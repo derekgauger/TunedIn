@@ -19,7 +19,7 @@ public class EmailTemplateService
       {
         Name = "contact",
         Subject = "Contact Form : {Subject}",
-        BodyTemplate = "From: {SenderName} ({SenderEmail})\n\nMessage:\n{Body}"
+        BodyTemplate = "From: {SenderName} ({SenderEmail})\n\n{Body}"
       },
       ["welcome"] = new EmailTemplate
       {
