@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TunedIn.Server")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e31cae9325e50ecfb504cf35bfbdad69a1403ebe")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cc4cceca12646be79bc8af5c33f06ea35230cd5e")]
 [assembly: System.Reflection.AssemblyProductAttribute("TunedIn.Server")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TunedIn.Server")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
