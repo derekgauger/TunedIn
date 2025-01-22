@@ -36,9 +36,18 @@ const CancelMembershipPopup: React.FC<CancelMembershipModalProps> = ({
   };
 
   return (
-    <Dialog open={open} onClose={onClose} disableScrollLock>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      disableScrollLock
+      PaperProps={{
+        sx: {
+          bgcolor: "secondary.light",
+        },
+      }}
+    >
       <DialogTitle>
-        <Box display="flex" alignItems="center">
+        <Box display="flex" alignItems="center" color={"white"}>
           <WarningIcon color="warning" sx={{ mr: 1 }} />
           Cancel Membership
         </Box>
@@ -47,11 +56,11 @@ const CancelMembershipPopup: React.FC<CancelMembershipModalProps> = ({
         <DialogContentText>
           {isRequest ? (
             <div>
-              <Typography variant="body1" gutterBottom>
+              <Typography variant="body1" gutterBottom color={"white"}>
                 Cancelling your membership is a sensitive action that affects
                 your account status.
               </Typography>
-              <Typography variant="body1" gutterBottom>
+              <Typography variant="body1" gutterBottom color={"white"}>
                 If you proceed, we will notify a Tuned In Athlete Development
                 admin to process your request. You are responsible for stopping
                 any payments made.
@@ -63,10 +72,10 @@ const CancelMembershipPopup: React.FC<CancelMembershipModalProps> = ({
             </div>
           ) : (
             <div>
-              <Typography variant="body1" gutterBottom>
+              <Typography variant="body1" gutterBottom color={"white"}>
                 You are cancelling this user's membership.
               </Typography>
-              <Typography variant="body1" gutterBottom>
+              <Typography variant="body1" gutterBottom color={"white"}>
                 If you proceed, the user will be notified of the cancellation.
               </Typography>
               <Typography variant="body2" color="error" sx={{ mt: 2 }}>

@@ -11,20 +11,38 @@ import {
 } from "@mui/material";
 import { motion } from "framer-motion";
 import { handleNavigation } from "../../Utils/functions";
+import { Picture } from "../../Utils/types";
+import { useEffect, useState } from "react";
+import { getPictures } from "../../Functions/pictures";
+import api from "../../Utils/api";
 
 const HomeGallerySection: React.FC = () => {
+  const [galleryImages, setGalleryImages] = useState<Picture[]>([]);
   const theme = useTheme();
   const isMedium = useMediaQuery(theme.breakpoints.down("md"));
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const galleryImages = [
-    "https://picsum.photos/600/600?random=1",
-    "https://picsum.photos/600/600?random=2",
-    "https://picsum.photos/600/600?random=3",
-    "https://picsum.photos/600/600?random=4",
-    "https://picsum.photos/600/600?random=5",
-    "https://picsum.photos/600/600?random=6",
-  ];
+  useEffect(() => {
+    fetchPictures();
+  }, []);
+
+  const fetchPictures = async () => {
+    try {
+      const response = await getPictures();
+      setGalleryImages(response?.data);
+    } catch (error) {
+      console.error("Error fetching pictures:", error);
+    }
+  };
+
+  // const galleryImages = [
+  //   "https://picsum.photos/600/600?random=1",
+  //   "https://picsum.photos/600/600?random=2",
+  //   "https://picsum.photos/600/600?random=3",
+  //   "https://picsum.photos/600/600?random=4",
+  //   "https://picsum.photos/600/600?random=5",
+  //   "https://picsum.photos/600/600?random=6",
+  // ];
 
   // Animation variants
   const fadeInUp = {
@@ -45,7 +63,6 @@ const HomeGallerySection: React.FC = () => {
       sx={{
         minHeight: "500px",
         width: "100%",
-        // backgroundColor: theme.palette.secondary.main,
         py: 6,
         position: "relative",
         "&::before": {
@@ -56,7 +73,6 @@ const HomeGallerySection: React.FC = () => {
           right: 0,
           bottom: 0,
           background: "transparent",
-          // background: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
         },
       }}
     >
@@ -103,7 +119,7 @@ const HomeGallerySection: React.FC = () => {
                   boxShadow: 3,
                 }}
               >
-                {galleryImages.map((img, index) => (
+                {galleryImages.slice(0, 6).map((img, index) => (
                   <motion.div
                     key={index}
                     variants={fadeInUp}
@@ -115,7 +131,7 @@ const HomeGallerySection: React.FC = () => {
                       rows={index === 0 ? 2 : 1}
                     >
                       <img
-                        src={img}
+                        src={`${api.defaults.baseURL}/protectedgallery/thumbnail/${img.id}`}
                         alt={`Gallery image ${index + 1}`}
                         style={{
                           height: "100%",

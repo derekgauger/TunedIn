@@ -5,12 +5,13 @@ import { useUser } from "../../Hooks/useUser";
 import ContainerPaper from "../../Components/GeneralComponents/ContainerPaper/ContainerPaper";
 import { handleNavigation, parsePhoneNumber } from "../../Utils/functions";
 import {
+  sendChangePasswordRequest,
   sendGetUserByUsername,
   sendUserDeleteRequest,
   sendUserUpdateRequest,
 } from "../../Functions/users";
 import DeleteAccountPopup from "../../Components/ProfileComponents/DeleteAccountModal/DeleteAccountModal";
-import NotificationPreferencesModal from "../../Components/ProfileComponents/NotificationPreferencesModal/NotificationPreferencesModal";
+// import NotificationPreferencesModal from "../../Components/ProfileComponents/NotificationPreferencesModal/NotificationPreferencesModal";
 import AccountInfoForm from "../../Components/ProfileComponents/AccountInfoForm/AccountInfoForm";
 import PersonalInfo from "../../Components/ProfileComponents/PersonalInfo/PersonalInfo";
 import QuickActions from "../../Components/ProfileComponents/QuickActions/QuickActions";
@@ -21,7 +22,11 @@ import { enqueueSnackbar } from "notistack";
 import ChangePasswordModal from "../../Components/ProfileComponents/ChangePasswordModal/ChangePasswordModal";
 import { User } from "../../Utils/types";
 import { useLocation } from "react-router-dom";
-import { getMembership } from "../../Functions/memberships";
+import {
+  getMembership,
+  requestCancelMembership,
+  requestChangeMembership,
+} from "../../Functions/memberships";
 import { sendTemplatedEmail } from "../../Functions/email";
 import { SENDING_EMAIL, SENDING_PHONE } from "../../Constants/contactInfo";
 import CancelMembershipPopup from "../../Components/ProfileComponents/CancelMembershipPopup";
@@ -36,7 +41,6 @@ interface ProfileProps {
 const Profile: React.FC<ProfileProps> = ({ viewingAsAdmin }) => {
   const [isLoading, setIsLoading] = useState(true);
   const { user, queryUser, logout } = useUser();
-  const [openDeletePopup, setOpenDeletePopup] = useState(false);
   // Non-admin Modals
   const [
     openRequestChangeMembershipModal,
@@ -46,21 +50,18 @@ const Profile: React.FC<ProfileProps> = ({ viewingAsAdmin }) => {
     openRequestCancelMembershipPopup,
     setOpenRequestCancelMembershipPopup,
   ] = useState(false);
+  const [openDeletePopup, setOpenDeletePopup] = useState(false);
 
   // Admin Modals
   const [openChangeMembershipModal, setOpenChangeMembershipModal] =
     useState(false);
   const [openCancelMembershipPopup, setOpenCancelMembershipPopup] =
     useState(false);
+  const [openAdminDeletePopup, setOpenAdminDeletePopup] = useState(false);
 
   const [openChangePassword, setOpenChangePassword] = useState(false);
-  const [openNotificationPreferences, setOpenNotificationPreferences] =
-    useState(false);
-  const [preferences, setPreferences] = useState({
-    email: true,
-    push: false,
-    sms: true,
-  });
+  // const [openNotificationPreferences, setOpenNotificationPreferences] =
+  useState(false);
   const [userDetails, setUserDetails] = useState<User | null>();
   const location = useLocation();
 
@@ -68,10 +69,6 @@ const Profile: React.FC<ProfileProps> = ({ viewingAsAdmin }) => {
     const getCurrentUsername = () => {};
     getCurrentUsername();
   }, []);
-
-  const handleSavePreferences = (newPreferences: any) => {
-    setPreferences(newPreferences);
-  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -110,7 +107,9 @@ const Profile: React.FC<ProfileProps> = ({ viewingAsAdmin }) => {
   }, [location.pathname, viewingAsAdmin]);
 
   useEffect(() => {
-    setUserDetails(user);
+    if (!viewingAsAdmin) {
+      setUserDetails(user);
+    }
   }, [user]);
 
   const updateAccountInformation = async (
@@ -121,7 +120,7 @@ const Profile: React.FC<ProfileProps> = ({ viewingAsAdmin }) => {
       userDetails?.id !== undefined &&
       userDetails?.membership !== undefined
     ) {
-      await sendUserUpdateRequest(
+      const response = await sendUserUpdateRequest(
         userDetails.id,
         values.firstName,
         values.lastName,
@@ -131,14 +130,33 @@ const Profile: React.FC<ProfileProps> = ({ viewingAsAdmin }) => {
         values.goal,
         userDetails.membership
       );
+      if (response?.status !== 200) {
+        enqueueSnackbar(response?.data.message, { variant: "error" });
+      } else {
+        enqueueSnackbar("Account information updated successfully", {
+          variant: "success",
+        });
+      }
+      getNewUserDetails(values.username);
     }
     setSubmitting(false);
-    const newUserDetails = await sendGetUserByUsername(values.username);
-    if (newUserDetails) {
-      const membership = await getMembership(newUserDetails.data.membership);
-      newUserDetails.data.membershipData = membership?.data;
+  };
+
+  const getNewUserDetails = async (username?: string) => {
+    if (viewingAsAdmin) {
+      if (!username) {
+        enqueueSnackbar("Failed to update user details", { variant: "error" });
+        return;
+      }
+      const newUserDetails = await sendGetUserByUsername(username);
+      if (newUserDetails) {
+        const membership = await getMembership(newUserDetails.data.membership);
+        newUserDetails.data.membershipData = membership?.data;
+      }
+      setUserDetails(newUserDetails?.data);
+    } else {
+      await queryUser();
     }
-    setUserDetails(newUserDetails?.data);
   };
 
   const handleUpdateMembership = async (requestedMembership: string) => {
@@ -160,12 +178,7 @@ const Profile: React.FC<ProfileProps> = ({ viewingAsAdmin }) => {
       enqueueSnackbar("Membership updated successfully", {
         variant: "success",
       });
-      const newUserDetails = await sendGetUserByUsername(userDetails.username);
-      if (newUserDetails) {
-        const membership = await getMembership(newUserDetails.data.membership);
-        newUserDetails.data.membershipData = membership?.data;
-      }
-      setUserDetails(newUserDetails?.data);
+      await getNewUserDetails(userDetails.username);
       if (requestedMembership === "None") {
         sendTemplatedEmail("membershipCancelled", userDetails.email, {
           Username: userDetails.username,
@@ -204,61 +217,45 @@ const Profile: React.FC<ProfileProps> = ({ viewingAsAdmin }) => {
     }
   };
 
-  const requestChangeMembership = async (requestedMembership: string) => {
-    const emailParameters = {
-      Username: userDetails?.username,
-      CurrentMembership: userDetails?.membershipData?.title ?? "None",
-      RequestedMembership: requestedMembership,
-      Email: userDetails?.email,
-      PhoneNumber: userDetails?.phoneNumber,
-    };
-    const response = await sendTemplatedEmail(
-      "changeMembershipRequest",
-      SENDING_EMAIL,
-      emailParameters
-    );
-    if (!response?.error) {
-      enqueueSnackbar(
-        "Membership change request sent successfully. We will get back to you as soon as possible.",
-        {
-          variant: "success",
-        }
-      );
+  const handleRequestChangeMembership = async (requestedMembership: string) => {
+    if (userDetails) {
+      await requestChangeMembership(userDetails, requestedMembership);
+      await getNewUserDetails(userDetails.username);
     } else {
-      enqueueSnackbar(response?.data.message, { variant: "error" });
+      enqueueSnackbar("Failed to request membership change", {
+        variant: "error",
+      });
     }
   };
 
-  const requestCancelMembership = async () => {
-    if (!userDetails?.membershipData) {
-      enqueueSnackbar("Failed to cancel membership", { variant: "error" });
-      return;
-    }
-    const emailParameters = {
-      Username: userDetails.username,
-      Membership: userDetails.membershipData.title,
-      Email: userDetails.email,
-      PhoneNumber: userDetails.phoneNumber,
-    };
-    const response = await sendTemplatedEmail(
-      "cancelMembershipRequest",
-      SENDING_EMAIL,
-      emailParameters
-    );
-    if (!response?.error) {
-      enqueueSnackbar(
-        "Membership cancellation request sent successfully. We will get back to you as soon as possible.",
-        {
-          variant: "success",
-        }
-      );
+  const handleRequestCancelMembership = async () => {
+    if (userDetails) {
+      await requestCancelMembership(userDetails);
+      await getNewUserDetails(userDetails.username);
     } else {
-      enqueueSnackbar(response?.data.message, { variant: "error" });
+      enqueueSnackbar("Failed to request membership cancellation", {
+        variant: "error",
+      });
     }
   };
 
-  const handleChangePassword = async () => {
-    console.log("Changing password");
+  const handleChangePassword = async (values: any) => {
+    if (userDetails) {
+      const response = await sendChangePasswordRequest(
+        values.currentPassword,
+        values.newPassword,
+        values.confirmNewPassword,
+        userDetails.email
+      );
+      if (response?.status !== 200) {
+        enqueueSnackbar(response?.data.message, { variant: "error" });
+      }
+      enqueueSnackbar("Password changed successfully", { variant: "success" });
+      logout();
+      handleNavigation("/sign-in");
+    } else {
+      enqueueSnackbar("Failed to change password", { variant: "error" });
+    }
   };
 
   if (isLoading || !userDetails) {
@@ -292,28 +289,41 @@ const Profile: React.FC<ProfileProps> = ({ viewingAsAdmin }) => {
         </Alert>
       )}
       <DeleteAccountPopup
+        userDetails={userDetails}
         open={openDeletePopup}
         onClose={() => setOpenDeletePopup(false)}
         onConfirm={handleDeleteAccount}
-        username={userDetails?.username}
       />
-      <NotificationPreferencesModal
+      {viewingAsAdmin && (
+        <DeleteAccountPopup
+          userDetails={userDetails}
+          open={openAdminDeletePopup}
+          onClose={() => setOpenAdminDeletePopup(false)}
+          onConfirm={handleDeleteAccount}
+          isAdminDelete={true}
+        />
+      )}
+      {/* <NotificationPreferencesModal
         open={openNotificationPreferences}
         onClose={() => setOpenNotificationPreferences(false)}
         onConfirm={handleSavePreferences}
         initialPreferences={preferences}
-      />
+      /> */}
       <ChangePasswordModal
         open={openChangePassword}
         onClose={() => setOpenChangePassword(false)}
-        onConfirm={handleChangePassword}
+        onSubmit={handleChangePassword}
       />
       <ChangeMembershipModal
         open={openRequestChangeMembershipModal}
         onClose={() => setOpenRequestChangeMembershipModal(false)}
-        onMembershipChange={requestChangeMembership}
+        onMembershipChange={handleRequestChangeMembership}
         currentMembership={userDetails.membershipData}
-        submitText="Request Membership Change"
+        submitText={
+          userDetails?.membershipData
+            ? "Request Membership Change"
+            : "Request Membership"
+        }
       />
       {viewingAsAdmin && (
         <ChangeMembershipModal
@@ -327,7 +337,7 @@ const Profile: React.FC<ProfileProps> = ({ viewingAsAdmin }) => {
       <CancelMembershipPopup
         open={openRequestCancelMembershipPopup}
         onClose={() => setOpenRequestCancelMembershipPopup(false)}
-        onConfirm={requestCancelMembership}
+        onConfirm={handleRequestCancelMembership}
         submitText="Request Membership Cancellation"
         isRequest
       />
@@ -346,13 +356,15 @@ const Profile: React.FC<ProfileProps> = ({ viewingAsAdmin }) => {
 
           {viewingAsAdmin && (
             <AdminQuickActions
+              userDetails={userDetails}
               setOpenChangeMembershipModal={setOpenChangeMembershipModal}
               setOpenCancelMembershipPopup={setOpenCancelMembershipPopup}
+              setOpenDeletePopup={setOpenAdminDeletePopup}
             />
           )}
           <QuickActions
             userDetails={userDetails}
-            setOpenNotificationPreferences={setOpenNotificationPreferences}
+            // setOpenNotificationPreferences={setOpenNotificationPreferences}
             setOpenDeletePopup={setOpenDeletePopup}
             setOpenChangePassword={setOpenChangePassword}
             setOpenCancelMembershipPopup={setOpenRequestCancelMembershipPopup}
@@ -364,6 +376,7 @@ const Profile: React.FC<ProfileProps> = ({ viewingAsAdmin }) => {
           <AccountInfoForm
             userDetails={userDetails}
             updateAccountInformation={updateAccountInformation}
+            updateUserDetails={getNewUserDetails}
           />
           <CurrentMembershipSection
             userDetails={userDetails}
@@ -371,7 +384,6 @@ const Profile: React.FC<ProfileProps> = ({ viewingAsAdmin }) => {
             openCancelMembershipPopup={setOpenRequestCancelMembershipPopup}
           />
           <AccountOptions
-            setOpenNotificationPreferences={setOpenNotificationPreferences}
             setOpenDeletePopup={setOpenDeletePopup}
             setOpenChangePassword={setOpenChangePassword}
           />

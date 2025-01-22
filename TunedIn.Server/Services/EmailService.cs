@@ -1,15 +1,18 @@
 using Microsoft.Extensions.Options;
 using System.Net;
 using System.Net.Mail;
+using TunedIn.Server.Services;
 public class EmailService
 {
   private readonly EmailSettings _emailSettings;
   private readonly EmailTemplateService _templateService;
+  private readonly ILoggingService _loggingService;
 
-  public EmailService(IOptions<EmailSettings> emailSettings)
+  public EmailService(IOptions<EmailSettings> emailSettings, ILoggingService loggingService)
   {
     _emailSettings = emailSettings.Value;
     _templateService = new EmailTemplateService();
+    _loggingService = loggingService;
   }
 
   public void SendTemplatedEmail(string templateName, string to, Dictionary<string, string> parameters)
@@ -17,6 +20,13 @@ public class EmailService
     var template = _templateService.GetTemplate(templateName);
     var body = _templateService.ProcessTemplate(templateName, parameters);
     var subject = _templateService.ProcessSubject(templateName, parameters);
+
+    if (new List<string> { "contact", "passwordReset" }.Contains(templateName))
+    {
+      parameters.Add("Recipient", to);
+    }
+    var logMessage = _templateService.ProcessLogMessage(templateName, parameters);
+    _loggingService.AddLog(template.LogType, logMessage);
 
     using (var client = new SmtpClient(_emailSettings.MailServer, _emailSettings.MailPort))
     {
@@ -35,19 +45,5 @@ public class EmailService
 
       client.Send(mailMessage);
     }
-  }
-
-  // Keep the original SendEmail method for backward compatibility
-  public void SendEmail(string to, string subject, string body, string senderEmail, string senderName)
-  {
-    var parameters = new Dictionary<string, string>
-    {
-      ["SenderName"] = senderName,
-      ["SenderEmail"] = senderEmail,
-      ["Subject"] = subject,
-      ["Body"] = body
-    };
-
-    SendTemplatedEmail("contact", to, parameters);
   }
 }

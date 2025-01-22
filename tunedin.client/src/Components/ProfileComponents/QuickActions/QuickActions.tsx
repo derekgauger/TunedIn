@@ -2,13 +2,13 @@ import { Button, Paper, styled } from "@mui/material";
 import React from "react";
 import {
   CreditCard,
-  NotificationsActive,
   Lock,
   Delete,
 } from "@mui/icons-material";
 import GenericSectionText from "../../GeneralComponents/GenericSectionText";
 import { DARK } from "../../../Utils/colors";
 import { User } from "../../../Utils/types";
+import { checkIfOccurredInLast24Hours } from "../../../Utils/functions";
 
 const QuickActionButton = styled(Button)(({ theme }) => ({
   marginBottom: theme.spacing(1),
@@ -17,7 +17,7 @@ const QuickActionButton = styled(Button)(({ theme }) => ({
 
 interface QuickActionsProps {
   userDetails: User | undefined;
-  setOpenNotificationPreferences: React.Dispatch<React.SetStateAction<boolean>>;
+  // setOpenNotificationPreferences: React.Dispatch<React.SetStateAction<boolean>>;
   setOpenDeletePopup: React.Dispatch<React.SetStateAction<boolean>>;
   setOpenChangePassword: React.Dispatch<React.SetStateAction<boolean>>;
   setOpenChangeMembershipModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -26,7 +26,7 @@ interface QuickActionsProps {
 
 const QuickActions: React.FC<QuickActionsProps> = ({
   userDetails,
-  setOpenNotificationPreferences,
+  // setOpenNotificationPreferences,
   setOpenDeletePopup,
   setOpenChangePassword,
   setOpenChangeMembershipModal,
@@ -38,7 +38,9 @@ const QuickActions: React.FC<QuickActionsProps> = ({
       sx={{ p: 3, backgroundColor: DARK ? "secondary.light" : "white" }}
     >
       <GenericSectionText text="Quick Actions" type="Header" className="mb-4" />
-      {userDetails?.membershipData && (
+      {!checkIfOccurredInLast24Hours(
+        userDetails?.latestChangeMembershipRequest
+      ) && (
         <div>
           <QuickActionButton
             variant="outlined"
@@ -46,16 +48,20 @@ const QuickActions: React.FC<QuickActionsProps> = ({
             startIcon={<CreditCard />}
             onClick={() => setOpenChangeMembershipModal(true)}
           >
-            Request Membership Change
+            {userDetails?.membershipData
+              ? "Request Membership Change"
+              : "Request Membership"}
           </QuickActionButton>
-          <QuickActionButton
-            variant="outlined"
-            color="error"
-            startIcon={<CreditCard />}
-            onClick={() => setOpenCancelMembershipPopup(true)}
-          >
-            Request Membership Cancellation
-          </QuickActionButton>
+          {userDetails?.membershipData && (
+            <QuickActionButton
+              variant="outlined"
+              color="error"
+              startIcon={<CreditCard />}
+              onClick={() => setOpenCancelMembershipPopup(true)}
+            >
+              Request Membership Cancellation
+            </QuickActionButton>
+          )}
         </div>
       )}
       <QuickActionButton
@@ -66,14 +72,14 @@ const QuickActions: React.FC<QuickActionsProps> = ({
       >
         Change Password
       </QuickActionButton>
-      <QuickActionButton
+      {/* <QuickActionButton
         variant="outlined"
         color="primary"
         startIcon={<NotificationsActive />}
         onClick={() => setOpenNotificationPreferences(true)}
       >
         Notification Preferences
-      </QuickActionButton>
+      </QuickActionButton> */}
       <QuickActionButton
         variant="outlined"
         color="error"

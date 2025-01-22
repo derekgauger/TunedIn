@@ -7,7 +7,7 @@ import Contact from "../Pages/Contact/Contact";
 import Profile from "../Pages/Profile/Profile";
 import Store from "../Pages/Store/Store";
 import PlanDetails from "../Pages/PlanDetails/PlanDetails";
-import ProfilesList from "../Components/ManageProfilesComponents/ProfilesList";
+import ManageProfiles from "../Components/ManageProfilesComponents/ManageProfiles";
 import Forms from "../Components/FormsComponents/Forms";
 
 export const routes = [
@@ -50,7 +50,7 @@ export const routes = [
   },
   {
     path: "/manage-profiles",
-    element: <ProfilesList />,
+    element: <ManageProfiles />,
     exact: true,
   },
   {

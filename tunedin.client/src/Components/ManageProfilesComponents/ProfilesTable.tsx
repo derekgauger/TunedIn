@@ -227,7 +227,22 @@ const ProfilesTable: React.FC<ProfilesTableProps> = ({
             value={membershipFilter}
             label="Membership Filter"
             onChange={(e) => setMembershipFilter(e.target.value)}
-            MenuProps={{ disableScrollLock: true }}
+            sx={{
+              borderRadius: 0,
+            }}
+            MenuProps={{
+              disableScrollLock: true,
+              PaperProps: {
+                sx: {
+                  border: "1px solid gray",
+                  bgcolor: "secondary.light",
+                  color: "white",
+                  "& .MuiMenuItem-root:hover": {
+                    bgcolor: "secondary.dark",
+                  },
+                },
+              },
+            }}
           >
             <MenuItem value="all">All Memberships</MenuItem>
             {uniqueMemberships.sort().map((membership) => (
@@ -257,7 +272,9 @@ const ProfilesTable: React.FC<ProfilesTableProps> = ({
                     sortDirection={orderBy === headCell.id ? order : false}
                     sx={{
                       color: DARK ? "white" : "black",
-                      borderBottom: DARK ? "1px solid rgba(255, 255, 255, 0.12)" : "1px solid rgba(0, 0, 0, 0.12)",
+                      borderBottom: DARK
+                        ? "1px solid rgba(255, 255, 255, 0.12)"
+                        : "1px solid rgba(0, 0, 0, 0.12)",
                       textAlign: "left",
                       fontWeight: "bold",
                       position: headCell.id === "actions" ? "sticky" : "sticky",

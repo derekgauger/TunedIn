@@ -143,11 +143,6 @@ const Navbar: React.FC = () => {
     { name: "Sevices", path: "/services", permission: true },
     { name: "Forms", path: "/forms", permission: true },
     { name: "Contact", path: "/contact", permission: true },
-    {
-      name: "Manage Profiles",
-      path: "/manage-profiles",
-      permission: user?.isAdmin,
-    },
   ];
 
   const trigger = useScrollTrigger({
@@ -159,9 +154,9 @@ const Navbar: React.FC = () => {
   const isSignIn = location.pathname === "/sign-in";
 
   const handleNavigationLocal = (path: string) => {
-    handleNavigation(path);
     setAnchorEl(null);
     setMobileOpen(false);
+    handleNavigation(path);
   };
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -211,6 +206,16 @@ const Navbar: React.FC = () => {
             <ListItem onClick={() => handleNavigationLocal("/profile")}>
               <ListItemText primary="Profile" sx={{ color: "white" }} />
             </ListItem>
+            {user.isAdmin && (
+              <ListItem
+                onClick={() => handleNavigationLocal("/manage-profiles")}
+              >
+                <ListItemText
+                  primary="Manage Profiles"
+                  sx={{ color: "white" }}
+                />
+              </ListItem>
+            )}
             <ListItem onClick={handleLogout}>
               <ListItemText primary="Logout" sx={{ color: "white" }} />
             </ListItem>
@@ -304,12 +309,31 @@ const Navbar: React.FC = () => {
                         open={Boolean(anchorEl)}
                         onClose={handleClose}
                         disableScrollLock
+                        PaperProps={{
+                          sx: {
+                            border: "1px solid gray",
+                            bgcolor: "secondary.light",
+                            color: "white",
+                            "& .MuiMenuItem-root:hover": {
+                              bgcolor: "secondary.dark",
+                            },
+                          },
+                        }}
                       >
                         <MenuItem
                           onClick={() => handleNavigationLocal("/profile")}
                         >
                           Profile
                         </MenuItem>
+                        {user.isAdmin && (
+                          <MenuItem
+                            onClick={() =>
+                              handleNavigationLocal("/manage-profiles")
+                            }
+                          >
+                            Manage Profiles
+                          </MenuItem>
+                        )}
                         <MenuItem onClick={handleLogout}>Logout</MenuItem>
                       </Menu>
                     </Box>

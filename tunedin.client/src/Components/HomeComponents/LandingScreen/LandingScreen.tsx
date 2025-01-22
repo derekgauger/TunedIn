@@ -44,7 +44,7 @@ const LandingScreen: React.FC = () => {
                 "2xl": "6xl",
               }}
             >
-              Achieve Your Fitness Goals With Tuned In
+              Workouts designed around you and your goals
             </CustomTypography>
             <Divider
               sx={{
@@ -75,8 +75,7 @@ const LandingScreen: React.FC = () => {
                 "2xl": "2xl",
               }}
             >
-              Join our state-of-the-art facility and get personalized training
-              from expert coaches.
+              Hit your performance and fitness goals with a program designed for YOU!
             </CustomTypography>
 
             {/* Social Media Section */}

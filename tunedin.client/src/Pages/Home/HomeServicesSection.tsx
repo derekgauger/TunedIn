@@ -65,7 +65,7 @@ const HomeServicesSection: React.FC = () => {
                     fontWeight: "bold",
                   }}
                 >
-                  The Services We Offer
+                  Available Services
                 </Typography>
                 <Typography
                   variant="h6"
@@ -73,7 +73,7 @@ const HomeServicesSection: React.FC = () => {
                   color="primary.contrastText"
                   sx={{ mb: 3 }}
                 >
-                  Transform Your Life with Our Premium Fitness Solutions
+                  Every program includes the following:
                 </Typography>
                 <Box
                   component={motion.div}
@@ -85,10 +85,11 @@ const HomeServicesSection: React.FC = () => {
                   }}
                 >
                   {[
-                    "Personal Training Sessions",
-                    "Group Fitness Classes",
+                    "100% Personalized Workouts",
                     "Nutrition Consulting",
-                    "Specialized Programs",
+                    "Exercise Technique Analysis",
+                    "Goal Setting",
+                    "Unlimited Contact Via Phone Call or Text",
                   ].map((service, index) => (
                     <Box
                       key={index}

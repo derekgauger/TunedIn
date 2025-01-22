@@ -124,7 +124,7 @@ const HomeAboutSection: React.FC = () => {
                     },
                   }}
                 >
-                  Our Story
+                  Our Goals
                 </Typography>
                 <Typography
                   variant="body1"
@@ -132,9 +132,7 @@ const HomeAboutSection: React.FC = () => {
                   color="primary.contrastText"
                   sx={{ mt: 3 }}
                 >
-                  Discover our journey to becoming the premier fitness
-                  destination. Our commitment to excellence and passion for
-                  health has driven us since day one.
+                  The fitness and athletics industry is full of gimmicks. At Tuned In Athlete Development, my goal is to provide safe and effective exercises to keep you moving in the right direction.
                 </Typography>
                 <Button
                   component={Button}
@@ -162,7 +160,7 @@ const HomeAboutSection: React.FC = () => {
                     },
                   }}
                 >
-                  Learn More About Us
+                  Learn More
                 </Button>
               </motion.div>
             </Grid>

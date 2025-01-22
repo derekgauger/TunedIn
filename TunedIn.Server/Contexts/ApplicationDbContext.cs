@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using LoginSystem.Backend.Models;
+using TunedIn.Server.Models;
 
 namespace TunedIn.Server.Data
 {
@@ -13,6 +14,9 @@ namespace TunedIn.Server.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Membership> Memberships { get; set; }
         public DbSet<FormModel> Forms { get; set; }
+        public DbSet<Log> Logs { get; set; }
+        public DbSet<Picture> Pictures { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

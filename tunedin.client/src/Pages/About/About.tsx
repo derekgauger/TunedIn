@@ -17,45 +17,45 @@ import GenericSectionText from "../../Components/GeneralComponents/GenericSectio
 import { DARK } from "../../Utils/colors";
 
 const mission: AboutSectionData = {
-  title: "Our Mission",
+  title: "My Mission",
   content:
-    "At our core, we strive to deliver exceptional value through cutting-edge technology and unparalleled customer service. Our goal is to empower businesses and individuals to reach their full potential in the digital age.",
+    "My goal is to provide all types of athletes with a safe and effective workout program. Each program is carefully developed around the inidivudal and aims to promote athletic performance, prevent injury, and increase longivity in the sport.",
   listItems: [
     {
       icon: <Business />,
-      primary: "Industry Expertise",
-      secondary: "Years of experience in various sectors",
+      primary: "Years of Experience",
+      secondary: "Strong background in many sports from Crossfit to XC mountain biking",
     },
     {
       icon: <People />,
-      primary: "Dedicated Team",
-      secondary: "Skilled professionals committed to your success",
+      primary: "Professionally Certified",
+      secondary: "Through both the NSCA and NASM, I am certified as a Personal Trainer / Sports Nutritionist",
     },
     {
       icon: <EmojiObjects />,
-      primary: "Innovative Solutions",
-      secondary: "Cutting-edge approaches to complex problems",
+      primary: "Flexible to Changes",
+      secondary: "I'm able to make any changes to your program if you have time constraints or injuries",
     },
   ],
 };
 
 const roots: AboutSectionData = {
-  title: "Our Roots",
+  title: "The Roots",
   content:
-    "Founded in 2010, our company began as a small startup with a big vision. What started as a two-person operation in a garage has grown into a thriving business with a global reach. Our journey has been marked by continuous innovation, unwavering commitment to quality, and a deep understanding of our clients' needs.",
-  listItems: [
-    { icon: <History />, primary: "2010", secondary: "Company founded" },
-    {
-      icon: <History />,
-      primary: "2015",
-      secondary: "Expanded to international markets",
-    },
-    {
-      icon: <History />,
-      primary: "2020",
-      secondary: "Launched revolutionary product line",
-    },
-  ],
+    "I started Tuned In Athlete Development with the primary goal of sharing everything I've learned over the years about general fitness and performance athletics. Over the last few years, I've seen an increase in misguided fitness advise that can be both harmful and counterintuitive toward your goals. With my experience in the industry, I've seen just how easy it is to fall victum to poor fitness and diet advice. Tuned In was created out of the idea that it is more important to really focus on training techniques and structure that actually work long term.",
+  // listItems: [
+  //   { icon: <History />, primary: "2010", secondary: "Company founded" },
+  //   {
+  //     icon: <History />,
+  //     primary: "2015",
+  //     secondary: "Expanded to international markets",
+  //   },
+  //   {
+  //     icon: <History />,
+  //     primary: "2020",
+  //     secondary: "Launched revolutionary product line",
+  //   },
+  // ],
 };
 
 const About: React.FC = () => {

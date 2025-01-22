@@ -7,7 +7,6 @@ import BackgroundImage from "../GeneralComponents/BackgroundImage/BackgroundImag
 import { handleNavigation, parsePhoneNumber } from "../../Utils/functions";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import SlidingAlternativeOptionBox from "./SlidingAlternativeOptionBox";
-import { sendTemplatedEmail } from "../../Functions/email";
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -35,16 +34,9 @@ const Login = () => {
         parsePhoneNumber(values.phoneNumber)
       );
       if (successfulRegister) {
-        const welcomeEmailParameters = { Username: values.username };
-        sendTemplatedEmail("welcome", values.email, welcomeEmailParameters);
         toggleForm();
       }
     }
-    setSubmitting(false);
-  };
-
-  const handleForgotPassword = async (values: any, { setSubmitting }: any) => {
-    console.log("Forgot password submitted", values);
     setSubmitting(false);
   };
 
@@ -88,7 +80,6 @@ const Login = () => {
               handleSubmit={handleSubmit}
               triedSubmit={triedSubmit}
               setTriedSubmit={setTriedSubmit}
-              handleForgotPassword={handleForgotPassword}
               isMobile={isMobile}
               toggleForm={toggleForm}
             />
@@ -107,7 +98,6 @@ const Login = () => {
                 handleSubmit={handleSubmit}
                 triedSubmit={triedSubmit}
                 setTriedSubmit={setTriedSubmit}
-                handleForgotPassword={handleForgotPassword}
                 isMobile={isMobile}
                 toggleForm={toggleForm}
               />

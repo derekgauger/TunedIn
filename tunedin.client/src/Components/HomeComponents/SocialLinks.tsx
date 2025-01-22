@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { motion, useAnimation } from "framer-motion";
 import { Stack, IconButton, Tooltip } from "@mui/material";
-import FacebookIcon from "@mui/icons-material/Facebook";
+// import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
-import TwitterIcon from "@mui/icons-material/Twitter";
+// import TwitterIcon from "@mui/icons-material/Twitter";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 
 const SocialLinks = () => {
@@ -11,25 +11,25 @@ const SocialLinks = () => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const socialLinks = [
-    {
-      name: "Facebook",
-      icon: <FacebookIcon sx={{ fontSize: 32 }} />,
-      url: "https://facebook.com/yourpage",
-    },
+    // {
+    //   name: "Facebook",
+    //   icon: <FacebookIcon sx={{ fontSize: 32 }} />,
+    //   url: "https://facebook.com/yourpage",
+    // },
     {
       name: "Instagram",
       icon: <InstagramIcon sx={{ fontSize: 32 }} />,
-      url: "https://instagram.com/yourpage",
+      url: "https://www.instagram.com/randy_tunedin/",
     },
-    {
-      name: "Twitter",
-      icon: <TwitterIcon sx={{ fontSize: 32 }} />,
-      url: "https://twitter.com/yourpage",
-    },
+    // {
+    //   name: "Twitter",
+    //   icon: <TwitterIcon sx={{ fontSize: 32 }} />,
+    //   url: "https://twitter.com/yourpage",
+    // },
     {
       name: "YouTube",
       icon: <YouTubeIcon sx={{ fontSize: 32 }} />,
-      url: "https://youtube.com/yourchannel",
+      url: "https://www.youtube.com/@TunedInAthleteDevelopment",
     },
   ];
 

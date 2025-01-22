@@ -4,6 +4,7 @@ import MembershipCard from "../../StoreComponents/MembershipCard/MembershipCard"
 import GenericSectionText from "../../GeneralComponents/GenericSectionText";
 import { User } from "../../../Utils/types";
 import { DARK } from "../../../Utils/colors";
+import { checkIfOccurredInLast24Hours } from "../../../Utils/functions";
 
 interface CurrentMembershipSectionProps {
   userDetails: User | undefined;
@@ -35,29 +36,32 @@ const CurrentMembershipSection: React.FC<CurrentMembershipSectionProps> = ({
             </GenericSectionText>
           )}
         </Box>
-        <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              openChangeMembershipModal(true);
-            }}
-          >
-            {userDetails?.membershipData
-              ? "Request Membership Change"
-              : "Get Membership"}
-          </Button>
-          {userDetails?.membershipData && (
+        {!checkIfOccurredInLast24Hours(
+          userDetails?.latestChangeMembershipRequest
+        ) && (
+          <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
             <Button
-              variant="outlined"
-              color="error"
-              onClick={() => openCancelMembershipPopup(true)}
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                openChangeMembershipModal(true);
+              }}
             >
-              Request Membership Cancellation
+              {userDetails?.membershipData
+                ? "Request Membership Change"
+                : "Request Membership"}
             </Button>
-          )}
-        </Box>
-
+            {userDetails?.membershipData && (
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={() => openCancelMembershipPopup(true)}
+              >
+                Request Membership Cancellation
+              </Button>
+            )}
+          </Box>
+        )}
         {/* Disclaimer */}
         <Box>
           <GenericSectionText type="Header">Disclaimer</GenericSectionText>

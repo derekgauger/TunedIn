@@ -3,6 +3,8 @@ import React from "react";
 import { CreditCard } from "@mui/icons-material";
 import GenericSectionText from "../../GeneralComponents/GenericSectionText";
 import { DARK } from "../../../Utils/colors";
+import { User } from "../../../Utils/types";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const QuickActionButton = styled(Button)(({ theme }) => ({
   marginBottom: theme.spacing(1),
@@ -10,13 +12,17 @@ const QuickActionButton = styled(Button)(({ theme }) => ({
 }));
 
 interface AdminQuickActionsProps {
+  userDetails: User | undefined;
   setOpenChangeMembershipModal: React.Dispatch<React.SetStateAction<boolean>>;
   setOpenCancelMembershipPopup: React.Dispatch<React.SetStateAction<boolean>>;
+  setOpenDeletePopup: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const AdminQuickActions: React.FC<AdminQuickActionsProps> = ({
+  userDetails,
   setOpenChangeMembershipModal,
   setOpenCancelMembershipPopup,
+  setOpenDeletePopup,
 }) => {
   return (
     <Paper
@@ -36,13 +42,23 @@ const AdminQuickActions: React.FC<AdminQuickActionsProps> = ({
       >
         Update User's Membership
       </QuickActionButton>
+      {userDetails?.membershipData && (
+        <QuickActionButton
+          variant="outlined"
+          color="primary"
+          startIcon={<CreditCard />}
+          onClick={() => setOpenCancelMembershipPopup(true)}
+        >
+          Cancel User's Membership
+        </QuickActionButton>
+      )}
       <QuickActionButton
         variant="outlined"
         color="primary"
-        startIcon={<CreditCard />}
-        onClick={() => setOpenCancelMembershipPopup(true)}
+        startIcon={<DeleteIcon />}
+        onClick={() => setOpenDeletePopup(true)}
       >
-        Cancel User's Membership
+        Delete User's Profile
       </QuickActionButton>
     </Paper>
   );

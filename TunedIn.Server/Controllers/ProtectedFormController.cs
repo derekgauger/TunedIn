@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TunedIn.Server.Data;
+using TunedIn.Server.Services;
 
 [Authorize]
 [ApiController]
@@ -10,10 +11,12 @@ public class ProtectedFormController : ControllerBase
 {
   private readonly ApplicationDbContext _context;
   private readonly long _fileSizeLimit = 10 * 1024 * 1024; // 10MB limit
+  private readonly ILoggingService _loggingService;
 
-  public ProtectedFormController(ApplicationDbContext context)
+  public ProtectedFormController(ApplicationDbContext context, ILoggingService loggingService)
   {
     _context = context;
+    _loggingService = loggingService;
   }
 
   [HttpPost("upload")]
@@ -23,6 +26,12 @@ public class ProtectedFormController : ControllerBase
     if (string.IsNullOrEmpty(userId))
     {
       return Unauthorized();
+    }
+
+    var user = await _context.Users.FindAsync(int.Parse(userId));
+    if (!user.IsAdmin)
+    {
+      return Forbid("You do not have permission to upload files.");
     }
 
     if (file == null || file.Length == 0)
@@ -51,6 +60,8 @@ public class ProtectedFormController : ControllerBase
       _context.Forms.Add(fileModel);
       await _context.SaveChangesAsync();
 
+
+      _loggingService.AddLog("File", $"User {user.Username} uploaded file '{file.FileName}'");
       return Ok(new
       {
         fileModel.Id,
@@ -71,8 +82,12 @@ public class ProtectedFormController : ControllerBase
       return Unauthorized();
     }
 
-    var userIdInt = int.Parse(userId);
-    var user = await _context.Users.FindAsync(userIdInt);
+    var user = await _context.Users.FindAsync(int.Parse(userId));
+    if (!user.IsAdmin)
+    {
+      return Forbid("You do not have permission to delete files.");
+    }
+
     var file = await _context.Forms.FindAsync(id);
 
     if (file == null)
@@ -85,9 +100,9 @@ public class ProtectedFormController : ControllerBase
       return Forbid("You do not have permission to delete this file.");
     }
 
+    _loggingService.AddLog("File", $"User {user.Username} deleted file '{file.FileName}'");
     _context.Forms.Remove(file);
     await _context.SaveChangesAsync();
-
     return Ok("File deleted successfully");
   }
 }

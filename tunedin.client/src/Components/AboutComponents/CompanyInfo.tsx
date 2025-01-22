@@ -9,7 +9,7 @@ const CompanyInfo: React.FC = () => {
     logo: "/logo.png",
     name: "The Company",
     description:
-      "We are a passionate team dedicated to creating innovative solutions for our clients.",
+      "Tuned In Athlete Development is a no-nonsense approach to fitness and 100% centered around individuals and their goals.",
   };
 
   return (

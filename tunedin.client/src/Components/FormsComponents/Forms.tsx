@@ -9,7 +9,6 @@ import {
   DialogContent,
   DialogActions,
   IconButton,
-  CircularProgress,
 } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
 import CloseIcon from "@mui/icons-material/Close";
@@ -27,16 +26,29 @@ import MiniFormPreview from "./MiniFormPreview";
 import FileCard from "./FileCard";
 import { useUser } from "../../Hooks/useUser";
 
+interface LoadingState {
+  [key: number]: boolean;
+}
+
 const Forms: React.FC = () => {
   const [files, setFiles] = useState<FileData[]>([]);
   const [selectedFile, setSelectedFile] = useState<FileData | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [miniPreviews, setMiniPreviews] = useState<FilePreview[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [fetchingFiles, setFetchingFiles] = useState(false);
+  const [loadingStates, setLoadingStates] = useState<LoadingState>({});
+  const [uploadLoading, setUploadLoading] = useState(false);
   const { user } = useUser();
+
+  const setFileLoading = (fileId: number, loading: boolean) => {
+    setLoadingStates((prev) => ({
+      ...prev,
+      [fileId]: loading,
+    }));
+  };
 
   useEffect(() => {
     fetchFiles();
@@ -72,6 +84,7 @@ const Forms: React.FC = () => {
     const previews: FilePreview[] = [];
 
     for (const file of files) {
+      setFileLoading(file.id, true);
       try {
         const response = await api.get(`/form/download/${file.id}`, {
           responseType: "blob",
@@ -81,6 +94,8 @@ const Forms: React.FC = () => {
         previews.push({ id: file.id, url });
       } catch (error) {
         console.error(`Failed to load preview for file ${file.id}`, error);
+      } finally {
+        setFileLoading(file.id, false);
       }
     }
 
@@ -90,7 +105,7 @@ const Forms: React.FC = () => {
   const handleUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
-    setLoading(true);
+    setUploadLoading(true);
     const formData = new FormData();
     formData.append("file", file);
     try {
@@ -104,7 +119,7 @@ const Forms: React.FC = () => {
         variant: "error",
       });
     } finally {
-      setLoading(false);
+      setUploadLoading(false);
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
@@ -113,7 +128,7 @@ const Forms: React.FC = () => {
 
   const handleDownload = async (fileId: number, fileName: string) => {
     try {
-      setLoading(true);
+      setFileLoading(fileId, true);
       const response = await downloadForm(fileId);
       const blob = new Blob([response?.data]);
       const url = window.URL.createObjectURL(blob);
@@ -129,13 +144,13 @@ const Forms: React.FC = () => {
         variant: "error",
       });
     } finally {
-      setLoading(false);
+      setFileLoading(fileId, false);
     }
   };
 
   const handleDelete = async (fileId: number) => {
     try {
-      setLoading(true);
+      setFileLoading(fileId, true);
       await deleteForm(fileId);
       enqueueSnackbar("File deleted successfully", {
         variant: "success",
@@ -146,13 +161,13 @@ const Forms: React.FC = () => {
         variant: "error",
       });
     } finally {
-      setLoading(false);
+      setFileLoading(fileId, false);
     }
   };
 
   const handlePreviewOpen = async (file: FileData) => {
     try {
-      setLoading(true);
+      setFileLoading(file.id, true);
       setSelectedFile(file);
       setPreviewOpen(true);
       const response = await downloadForm(file.id);
@@ -164,7 +179,7 @@ const Forms: React.FC = () => {
         variant: "error",
       });
     } finally {
-      setLoading(false);
+      setFileLoading(file.id, false);
     }
   };
 
@@ -193,7 +208,7 @@ const Forms: React.FC = () => {
     <ContainerPaper>
       <PageHeader title="Forms" />
       {user?.isAdmin && (
-        <Box sx={{ mt: 3, mb: 3 }}>
+        <Box sx={{ mt: 3, mb: 3, textAlign: "center", width: "100%" }}>
           <input
             type="file"
             ref={fileInputRef}
@@ -206,7 +221,8 @@ const Forms: React.FC = () => {
               variant="contained"
               component="span"
               startIcon={<UploadIcon />}
-              disabled={loading}
+              disabled={uploadLoading}
+              fullWidth
             >
               Upload File
             </Button>
@@ -225,31 +241,11 @@ const Forms: React.FC = () => {
               getMiniPreview={getMiniPreview}
               handleDelete={handleDelete}
               handlePreviewOpen={handlePreviewOpen}
-              loading={loading}
+              loading={loadingStates[file.id] || false}
             />
           </Grid>
         ))}
       </Grid>
-
-      {/* Loading overlay */}
-      {loading && (
-        <Box
-          sx={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "rgba(0, 0, 0, 0.3)",
-            zIndex: 9999,
-          }}
-        >
-          <CircularProgress />
-        </Box>
-      )}
 
       {/* Preview Dialog */}
       <Dialog
@@ -303,7 +299,9 @@ const Forms: React.FC = () => {
               selectedFile &&
               handleDownload(selectedFile.id, selectedFile.fileName)
             }
-            disabled={loading}
+            disabled={
+              selectedFile ? loadingStates[selectedFile.id] || false : false
+            }
           >
             Download
           </Button>

@@ -1,5 +1,5 @@
 import { Box, Button, Paper } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { emailSchema } from "./validations";
 import ErrorMessage from "../GeneralComponents/ErrorMessage/ErrorMessage";
 import { Field, Form, Formik, FormikHelpers } from "formik";
@@ -10,10 +10,19 @@ import { EmailSettings } from "../../Utils/types";
 import { enqueueSnackbar } from "notistack";
 import { sendTemplatedEmail } from "../../Functions/email";
 import { useUser } from "../../Hooks/useUser";
-import { SENDING_EMAIL } from "../../Constants/contactInfo";
+import { useLocation } from "react-router";
 
-const EmailForm: React.FC = () => {
+interface EmailFormProps {
+  toEmail: string | undefined;
+  onSendEmail?: () => void;
+}
+
+const EmailForm: React.FC<EmailFormProps> = ({
+  toEmail,
+  onSendEmail,
+}) => {
   const [triedSubmit, setTriedSubmit] = useState(false);
+  const location = useLocation();
   const { user } = useUser();
 
   // Create initial values once when component mounts or when user changes
@@ -34,20 +43,34 @@ const EmailForm: React.FC = () => {
       SenderName: values.name,
       SenderEmail: values.email,
     };
-    const response = sendTemplatedEmail(
-      "contact",
-      SENDING_EMAIL,
-      emailParameters
-    );
+    if (!toEmail) {
+      enqueueSnackbar("Failed to send email. Please try again later.", {
+        variant: "error",
+      });
+      return;
+    }
+    const response = sendTemplatedEmail("contact", toEmail, emailParameters);
     if (response.error) {
       enqueueSnackbar("Failed to send email. Please try again later.", {
         variant: "error",
       });
     } else {
       resetForm();
-      enqueueSnackbar("Email sent successfully! Thank you for contacting us!", {
-        variant: "success",
-      });
+      if (onSendEmail) {
+        onSendEmail();
+      }
+      if (location.pathname === "/contact") {
+        enqueueSnackbar(
+          "Email sent successfully! Thank you for contacting us!",
+          {
+            variant: "success",
+          }
+        );
+      } else {
+        enqueueSnackbar("Email sent successfully!", {
+          variant: "success",
+        });
+      }
     }
     setSubmitting(false);
   };
@@ -61,12 +84,15 @@ const EmailForm: React.FC = () => {
         backgroundColor: DARK ? "secondary.light" : "white",
       }}
     >
-      <GenericSectionText text="Send us a message" type="Header" />
+      {}
+      {location.pathname === "/contact" && (
+        <GenericSectionText text="Send us a message" type="Header" />
+      )}
       <Formik
         initialValues={getInitialValues()}
         validationSchema={emailSchema}
         onSubmit={handleSubmit}
-        enableReinitialize // This ensures form updates when user data changes
+        enableReinitialize
       >
         {({ errors, isSubmitting }) => (
           <Form>

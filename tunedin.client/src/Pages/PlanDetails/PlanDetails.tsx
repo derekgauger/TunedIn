@@ -21,7 +21,10 @@ import { useLocation } from "react-router-dom";
 import GenericSectionText from "../../Components/GeneralComponents/GenericSectionText";
 import CustomTypography from "../../Components/CustomUI/CustomTypography";
 import { Membership } from "../../Utils/types";
-import { getMembership } from "../../Functions/memberships";
+import {
+  getMembership,
+  requestChangeMembership,
+} from "../../Functions/memberships";
 import { enqueueSnackbar } from "notistack";
 import LoadingIcon from "../../Components/GeneralComponents/LoadingIcon/LoadingIcon";
 import { useUser } from "../../Hooks/useUser";
@@ -74,7 +77,7 @@ const PlanDetails: React.FC = () => {
       icon: <FitnessCenterIcon />,
     },
     {
-      text: "State-of-the-art equipment and facilities",
+      text: "State-of-the-a rt equipment and facilities",
       icon: <EmojiEventsIcon />,
     },
     {
@@ -89,7 +92,13 @@ const PlanDetails: React.FC = () => {
 
   const handleSignUp = () => {
     if (user) {
-      console.log("Sign up button clicked");
+      if (plan?.title) {
+        requestChangeMembership(user, plan.title);
+      } else {
+        enqueueSnackbar("Plan title is missing. Please try again later.", {
+          variant: "error",
+        });
+      }
     } else {
       enqueueSnackbar(
         "Please sign in or register an account to sign up for a plan",

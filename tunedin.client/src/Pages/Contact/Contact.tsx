@@ -4,6 +4,7 @@ import ContainerPaper from "../../Components/GeneralComponents/ContainerPaper/Co
 import PageHeader from "../../Components/GeneralComponents/PageHeader/PageHeader";
 import EmailForm from "../../Components/ContactPageSections/EmailForm";
 import ContactInfo from "../../Components/ContactPageSections/ContactInfo";
+import { SENDING_EMAIL } from "../../Constants/contactInfo";
 
 const Contact: React.FC = () => {
   return (
@@ -12,7 +13,7 @@ const Contact: React.FC = () => {
 
       <Grid container spacing={3}>
         <Grid item xs={12} md={8}>
-          <EmailForm />
+          <EmailForm toEmail={SENDING_EMAIL} />
         </Grid>
         <Grid item xs={12} md={4}>
           <ContactInfo />

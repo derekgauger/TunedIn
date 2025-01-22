@@ -1,12 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
+using TunedIn.Server.Services;
 
 namespace TunedIn.Server.Controllers
 {
   [ApiController]
   [Route("api/[controller]")]
-  [Authorize]
   public class EmailController : ControllerBase
   {
     private readonly EmailService _emailService;
@@ -23,7 +21,6 @@ namespace TunedIn.Server.Controllers
       {
         return BadRequest("Recipient email is required");
       }
-
       _emailService.SendTemplatedEmail(model.TemplateName, model.ToEmail, model.Parameters);
       return Ok("Email sent successfully");
     }

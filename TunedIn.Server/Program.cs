@@ -2,8 +2,8 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using LoginSystem.Backend.Services;
-using TunedIn.Server.Data;
 using Microsoft.EntityFrameworkCore;
+using TunedIn.Server.Data;
 using TunedIn.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,18 +26,21 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+// Configure Email Services
+var emailSettings = builder.Configuration.GetSection("EmailSettings").Get<EmailSettings>();
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddScoped<ILoggingService, LoggingService>();
+builder.Services.AddSingleton<EmailTemplateService, EmailTemplateService>();
+builder.Services.AddScoped<EmailService, EmailService>();
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
     ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))));
 
-// Register AuthService
+// Register other services
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<MembershipService>();
-builder.Services.AddScoped<EmailService>();
-builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
-builder.Services.AddSingleton<EmailTemplateService>();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -59,8 +62,6 @@ app.UseCors(builder =>
            .AllowAnyHeader());
 
 app.UseHttpsRedirection();
-
-// Add authentication middleware
 app.UseAuthentication();
 app.UseAuthorization();
 

@@ -6,10 +6,9 @@ import {
   ListItemText,
   Paper,
   styled,
-  Typography,
 } from "@mui/material";
 import React from "react";
-import { NotificationsActive, Lock, Delete } from "@mui/icons-material";
+import { Lock, Delete } from "@mui/icons-material";
 import GenericSectionText from "../../GeneralComponents/GenericSectionText";
 import { DARK } from "../../../Utils/colors";
 
@@ -23,13 +22,13 @@ const StyledButton = styled(Button)(() => ({
 }));
 
 interface AccountOptionsProps {
-  setOpenNotificationPreferences: React.Dispatch<React.SetStateAction<boolean>>;
+  // setOpenNotificationPreferences: React.Dispatch<React.SetStateAction<boolean>>;
   setOpenDeletePopup: React.Dispatch<React.SetStateAction<boolean>>;
   setOpenChangePassword: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const AccountOptions: React.FC<AccountOptionsProps> = ({
-  setOpenNotificationPreferences,
+  // setOpenNotificationPreferences,
   setOpenDeletePopup,
   setOpenChangePassword,
 }) => {
@@ -62,7 +61,7 @@ const AccountOptions: React.FC<AccountOptionsProps> = ({
             Change
           </StyledButton>
         </ListItem>
-        <ListItem>
+        {/* <ListItem>
           <StyledListItemIcon>
             <NotificationsActive />
           </StyledListItemIcon>
@@ -83,7 +82,7 @@ const AccountOptions: React.FC<AccountOptionsProps> = ({
           >
             Manage
           </StyledButton>
-        </ListItem>
+        </ListItem> */}
         <ListItem>
           <StyledListItemIcon>
             <Delete />

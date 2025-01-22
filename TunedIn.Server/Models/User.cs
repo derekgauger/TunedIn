@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace LoginSystem.Backend.Models
 {
     public class User
@@ -16,7 +18,8 @@ namespace LoginSystem.Backend.Models
         public Boolean IsAdmin { get; set; } = false;
         public Boolean VerifiedEmail { get; set; } = false;
         public Boolean VerifiedPhone { get; set; } = false;
-
+        public DateTime LatestChangeMembershipRequest { get; set; } = DateTime.MinValue;
+        public int EmailVerificationCode { get; set; }
     }
 
     public class RegisterModel
@@ -45,5 +48,34 @@ namespace LoginSystem.Backend.Models
         public string PhoneNumber { get; set; } = string.Empty;
         public string Goal { get; set; } = string.Empty;
         public string Membership { get; set; } = string.Empty;
+    }
+
+    public class ChangePasswordRequest
+    {
+        [Required]
+        public string CurrentPassword { get; set; }
+
+        [Required]
+        public string NewPassword { get; set; }
+
+        [Required]
+        [Compare("NewPassword", ErrorMessage = "The confirmation password does not match")]
+        public string ConfirmNewPassword { get; set; }
+
+        [Required]
+        public string Email { get; set; }
+    }
+
+    public class ForgotPasswordRequest
+    {
+        [Required]
+        public string NewPassword { get; set; }
+
+        [Required]
+        [Compare("NewPassword", ErrorMessage = "The confirmation password does not match")]
+        public string ConfirmNewPassword { get; set; }
+
+        [Required]
+        public string Email { get; set; }
     }
 }

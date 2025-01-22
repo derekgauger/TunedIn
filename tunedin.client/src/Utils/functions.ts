@@ -53,3 +53,12 @@ export const handleNavigation = (
     setTimeout(() => scrollToTop(), 0);
   }
 };
+
+export const checkIfOccurredInLast24Hours = (timestamp: string | undefined) => {
+  if (!timestamp) {
+    return false;
+  }
+  const now = new Date().getTime();
+  const eventTime = new Date(timestamp).getTime();
+  return now - eventTime < 86400000;
+};

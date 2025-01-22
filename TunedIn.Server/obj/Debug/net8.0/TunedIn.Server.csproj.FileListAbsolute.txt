@@ -144,3 +144,4 @@ C:\Users\Derek\source\repos\TunedIn\TunedIn.Server\bin\Debug\net8.0\runtimes\win
 C:\Users\Derek\source\repos\TunedIn\TunedIn.Server\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
 C:\Users\Derek\source\repos\TunedIn\TunedIn.Server\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
 C:\Users\Derek\source\repos\TunedIn\TunedIn.Server\obj\Debug\net8.0\TunedIn.Server.sourcelink.json
+C:\Users\Derek\source\repos\TunedIn\TunedIn.Server\bin\Debug\net8.0\SixLabors.ImageSharp.dll

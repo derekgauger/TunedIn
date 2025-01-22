@@ -13,6 +13,7 @@ export type User = {
   isAdmin: boolean;
   verifiedPhone: boolean;
   verifiedEmail: boolean;
+  latestChangeMembershipRequest: string;
 };
 
 export type Membership = {
@@ -48,7 +49,7 @@ export type AboutFounderData = {
   name: string;
   description: string;
   image: string;
-  journey: AboutListItemData[];
+  journey?: AboutListItemData[];
 };
 
 export type RedirectCardData = {
@@ -80,4 +81,22 @@ export type FileData = {
 export type FilePreview = {
   id: number;
   url: string;
+};
+
+export type Log = {
+  id: number;
+  type: string;
+  message: string;
+  createdAt: string;
+};
+
+export type Picture = {
+  id: number;
+  fileName: string;
+  title: string;
+  description: string;
+  uploadDate: string;
+  fileSize: number;
+  imageUrl: string;
+  thumbnailUrl: string;
 };

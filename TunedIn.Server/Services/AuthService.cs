@@ -16,6 +16,9 @@ namespace LoginSystem.Backend.Services
         Task<(bool success, string message)> RegisterUser(string username, string email, string password, string firstName, string lastName, string phoneNumber);
         Task<(User user, string message)> AuthenticateUser(string loginIdentifier, string password);
         string GenerateJwtToken(User user);
+        Task<(bool success, string message)> ChangePassword(string username, string currentPassword, string newPassword);
+        Task<(bool success, string message)> ResetPassword(User username, string newPassword);
+
     }
 
     public class AuthService : IAuthService
@@ -83,6 +86,65 @@ namespace LoginSystem.Backend.Services
             return (user, "Authentication successful");
         }
 
+        public async Task<(bool success, string message)> ChangePassword(string email, string currentPassword, string newPassword)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+
+            if (user == null)
+            {
+                return (false, "User not found");
+            }
+
+            if (!VerifyPassword(currentPassword, user.Salt, user.PasswordHash))
+            {
+                return (false, "Current password is incorrect");
+            }
+
+            // Generate new salt and hash for the new password
+            var newSalt = GenerateSalt();
+            var newPasswordHash = HashPassword(newPassword, newSalt);
+
+            // Update the user's password
+            user.Salt = newSalt;
+            user.PasswordHash = newPasswordHash;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                return (true, "Password changed successfully");
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine($"Error changing password: {ex.Message}");
+                return (false, "An error occurred while changing the password");
+            }
+        }
+
+        public async Task<(bool success, string message)> ResetPassword(User user, string newPassword)
+        {
+            // Generate new salt and hash for the new password
+            var newSalt = GenerateSalt();
+            var newPasswordHash = HashPassword(newPassword, newSalt);
+
+            // Update the user's password
+            user.Salt = newSalt;
+            user.PasswordHash = newPasswordHash;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                return (true, "Password reset successfully");
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine($"Error resetting password: {ex.Message}");
+                return (false, "An error occurred while resetting the password");
+            }
+        }
+
+
         public string GenerateJwtToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -98,7 +160,7 @@ namespace LoginSystem.Backend.Services
                     new Claim(ClaimTypes.Surname, user.LastName),
                     new Claim(ClaimTypes.MobilePhone, user.PhoneNumber)
                 }),
-                Expires = DateTime.UtcNow.AddHours(1),
+                Expires = DateTime.MaxValue, // Token never expires
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);

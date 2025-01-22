@@ -77,7 +77,7 @@ const HomeContactSection: React.FC = () => {
                     textShadow: "2px 2px 4px rgba(0,0,0,0.3)",
                   }}
                 >
-                  Ready to Start Your Journey?
+                  Are You Ready to Tune In?
                 </Typography>
                 <Typography
                   variant="h6"
@@ -88,7 +88,7 @@ const HomeContactSection: React.FC = () => {
                     textShadow: "1px 1px 2px rgba(0,0,0,0.3)",
                   }}
                 >
-                  Join our community and transform your life today
+                  Let's get started today!
                 </Typography>
                 <Button
                   component={Button}

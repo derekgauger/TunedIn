@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box, Button, Grid, Paper, InputAdornment } from "@mui/material";
 import { Field, Form, Formik } from "formik";
-import React from "react";
+import React, { useState } from "react";
 import ErrorMessage from "../../GeneralComponents/ErrorMessage/ErrorMessage";
 import InputMask from "react-input-mask";
 import { accountInfoSchema, initialAccountInfo } from "./validations";
@@ -11,16 +11,22 @@ import GenericTextField from "../../GeneralComponents/GenericTextField";
 import GenericSectionText from "../../GeneralComponents/GenericSectionText";
 import { User } from "../../../Utils/types";
 import { DARK } from "../../../Utils/colors";
+import { setEmailVerificationCode } from "../../../Functions/users";
+import EmailVerificationDialog from "../../GeneralComponents/EmailVerificationCode/EmailVerificationCode";
 
 interface AccountInfoFormProps {
   userDetails: User | undefined;
   updateAccountInformation: any;
+  updateUserDetails: any;
 }
 
 const AccountInfoForm: React.FC<AccountInfoFormProps> = ({
   userDetails,
   updateAccountInformation,
+  updateUserDetails,
 }) => {
+  const [openEmailVerification, setOpenEmailVerification] = useState(false);
+
   const compareBeforeAndAfter = (values: any) => {
     const phoneNumberValue = parsePhoneNumber(values.phoneNumber);
     if (
@@ -36,11 +42,23 @@ const AccountInfoForm: React.FC<AccountInfoFormProps> = ({
     return true;
   };
 
+  const handleSetEmailVerificationCode = async () => {
+    if (!userDetails || userDetails.verifiedEmail) return;
+    await setEmailVerificationCode(userDetails?.email);
+    setOpenEmailVerification(true);
+  };
+
   return (
     <Paper
       elevation={3}
       sx={{ p: 3, mb: 4, backgroundColor: DARK ? "secondary.light" : "#white" }}
     >
+      <EmailVerificationDialog
+        open={openEmailVerification}
+        onClose={() => setOpenEmailVerification(false)}
+        onConfirm={updateUserDetails}
+        email={userDetails?.email}
+      />
       <Formik
         initialValues={userDetails ?? initialAccountInfo}
         validationSchema={accountInfoSchema}
@@ -112,6 +130,7 @@ const AccountInfoForm: React.FC<AccountInfoFormProps> = ({
                                 color: DARK ? "primary.light" : "primary.main",
                               }}
                               startIcon={<VerifiedUser fontSize="small" />}
+                              onClick={handleSetEmailVerificationCode}
                             >
                               Verify Email
                             </Button>
@@ -135,29 +154,29 @@ const AccountInfoForm: React.FC<AccountInfoFormProps> = ({
                             fullWidth
                             error={touched.phoneNumber && errors.phoneNumber}
                             isDark={DARK}
-                            InputProps={{
-                              endAdornment: userDetails &&
-                                !userDetails.verifiedPhone && (
-                                  <InputAdornment position="end">
-                                    <Button
-                                      size="small"
-                                      variant="text"
-                                      sx={{
-                                        minWidth: "auto",
-                                        textTransform: "none",
-                                        color: DARK
-                                          ? "primary.light"
-                                          : "primary.main",
-                                      }}
-                                      startIcon={
-                                        <VerifiedUser fontSize="small" />
-                                      }
-                                    >
-                                      Verify Phone
-                                    </Button>
-                                  </InputAdornment>
-                                ),
-                            }}
+                            // InputProps={{
+                            //   endAdornment: userDetails &&
+                            //     !userDetails.verifiedPhone && (
+                            //       <InputAdornment position="end">
+                            //         <Button
+                            //           size="small"
+                            //           variant="text"
+                            //           sx={{
+                            //             minWidth: "auto",
+                            //             textTransform: "none",
+                            //             color: DARK
+                            //               ? "primary.light"
+                            //               : "primary.main",
+                            //           }}
+                            //           startIcon={
+                            //             <VerifiedUser fontSize="small" />
+                            //           }
+                            //         >
+                            //           Verify Phone
+                            //         </Button>
+                            //       </InputAdornment>
+                            //     ),
+                            // }}
                           />
                         )}
                       </InputMask>

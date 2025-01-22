@@ -9,10 +9,16 @@ import CustomTypography from "../../CustomUI/CustomTypography";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { handleNavigation } from "../../../Utils/functions";
 import { DARK } from "../../../Utils/colors";
+import EmailVerificationDialog from "../../GeneralComponents/EmailVerificationCode/EmailVerificationCode";
+import {
+  sendForgotPasswordRequest,
+  setEmailVerificationCodeAuth,
+} from "../../../Functions/users";
+import ChangePasswordModal from "../../ProfileComponents/ChangePasswordModal/ChangePasswordModal";
+import { enqueueSnackbar } from "notistack";
 
 interface LoginFormProps {
   handleSubmit: (values: any, { setSubmitting }: any) => void;
-  handleForgotPassword: (values: any, { setSubmitting }: any) => void;
   triedSubmit: boolean;
   setTriedSubmit: any;
   isMobile: boolean;
@@ -21,13 +27,14 @@ interface LoginFormProps {
 
 const LoginForm: React.FC<LoginFormProps> = ({
   handleSubmit,
-  handleForgotPassword,
   triedSubmit,
   setTriedSubmit,
   isMobile,
   toggleForm,
 }) => {
   const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [openEmailVerification, setOpenEmailVerification] = useState(false);
+  const [openChangePassword, setOpenChangePassword] = useState(false);
   const [formKey, setFormKey] = useState(0);
 
   const toggleForgotPassword = () => {
@@ -40,6 +47,36 @@ const LoginForm: React.FC<LoginFormProps> = ({
     resetForm();
     setTriedSubmit(false);
     setFormKey((prevKey) => prevKey + 1);
+  };
+
+  const handleForgotPassword = async (values: any) => {
+    await setEmailVerificationCodeAuth(values?.email);
+    setOpenEmailVerification(true);
+  };
+
+  const handleChangePassword = async (values: any) => {
+    try {
+      if (!values?.newPassword || !values?.confirmNewPassword) {
+        enqueueSnackbar("All fields are required1", { variant: "error" });
+        return;
+      }
+
+      const response = await sendForgotPasswordRequest(
+        values.newPassword,
+        values.confirmNewPassword,
+        values.email
+      );
+
+      if (response?.status === 200) {
+        enqueueSnackbar("Password changed successfully", {
+          variant: "success",
+        });
+        handleNavigation("/sign-in");
+        setOpenChangePassword(false);
+      }
+    } catch (error) {
+      enqueueSnackbar("Failed to change password", { variant: "error" });
+    }
   };
 
   return (
@@ -112,6 +149,20 @@ const LoginForm: React.FC<LoginFormProps> = ({
         >
           {({ values, errors, isSubmitting, resetForm }) => (
             <Form>
+              <ChangePasswordModal
+                open={openChangePassword}
+                onClose={() => setOpenChangePassword(false)}
+                onSubmit={handleChangePassword}
+                isForgotPassword={true}
+                email={values?.email}
+              />
+              <EmailVerificationDialog
+                open={openEmailVerification}
+                onClose={() => setOpenEmailVerification(false)}
+                onConfirm={() => setOpenChangePassword(true)}
+                email={values?.email}
+                isAuth
+              />
               {isForgotPassword ? (
                 <>
                   <Field
@@ -159,7 +210,9 @@ const LoginForm: React.FC<LoginFormProps> = ({
                     flex: 1,
                     mr: 1,
                   }}
-                  onClick={() => setTriedSubmit(true)}
+                  onClick={() => {
+                    setTriedSubmit(true);
+                  }}
                 >
                   {isForgotPassword ? "Reset Password" : "Sign In"}
                 </Button>

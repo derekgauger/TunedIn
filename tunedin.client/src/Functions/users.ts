@@ -45,6 +45,49 @@ export const sendRegisterRequest = async (
   }
 };
 
+export const sendChangePasswordRequest = async (
+  currentPassword: string,
+  newPassword: string,
+  confirmNewPassword: string,
+  email: string
+) => {
+  try {
+    const response = await api.post("/auth/change-password", {
+      currentPassword,
+      newPassword,
+      confirmNewPassword,
+      email,
+    });
+    return response;
+  } catch (error: any) {
+    enqueueSnackbar(error.response.data.message, {
+      variant: "error",
+    });
+  }
+};
+
+export const sendForgotPasswordRequest = async (
+  newPassword: string,
+  confirmNewPassword: string,
+  email: string
+) => {
+  try {
+    const response = await api.post("/auth/forgot-password", {
+      NewPassword: newPassword, // Match the C# model property names
+      ConfirmNewPassword: confirmNewPassword,
+      Email: email,
+    });
+    return response;
+  } catch (error: any) {
+    if (error.response?.data?.message) {
+      enqueueSnackbar(error.response.data.message, {
+        variant: "error",
+      });
+    }
+    throw error; // Re-throw to be caught by the calling function
+  }
+};
+
 export const sendGetAllUsers = async () => {
   try {
     const response = await api.get("/protecteduser/all-users");
@@ -88,7 +131,6 @@ export const sendUserInfoRequest = async () => {
       return;
     }
     const response = await api.get("/protecteduser/user-info");
-    localStorage.setItem("user", JSON.stringify(response.data));
     return response;
   } catch (error: any) {
     enqueueSnackbar(error.response.data.message, {
@@ -110,7 +152,6 @@ export const sendUserUpdateRequest = async (
   try {
     const token = localStorage.getItem("token");
     if (!token) {
-      console.error("Use token not found. Try logging in again.");
       return;
     }
     const response = await api.put("/protecteduser/update-user", {
@@ -123,10 +164,9 @@ export const sendUserUpdateRequest = async (
       goal,
       membership,
     });
-    localStorage.setItem("user", JSON.stringify(response.data));
     return response;
   } catch (error: any) {
-    enqueueSnackbar(error.response.data.message, {
+    enqueueSnackbar(error.response.data, {
       variant: "error",
     });
   }
@@ -143,6 +183,71 @@ export const sendUserDeleteRequest = async (username: string) => {
         usernameToDelete: username,
       },
     });
+    return response;
+  } catch (error: any) {
+    enqueueSnackbar(error.response.data.message, {
+      variant: "error",
+    });
+  }
+};
+
+export const updateMembershipRequestTime = async (username: string) => {
+  try {
+    const response = await api.put(
+      `/protecteduser/update-membership-request?Username=${username}`
+    );
+    return response;
+  } catch (error: any) {
+    enqueueSnackbar(error.response.data.message, {
+      variant: "error",
+    });
+  }
+};
+
+export const setEmailVerificationCode = async (email: string) => {
+  try {
+    const response = await api.put(
+      `/protecteduser/set-email-verification-code?Email=${email}`
+    );
+    return response;
+  } catch (error: any) {
+    enqueueSnackbar(error.response.data.message, {
+      variant: "error",
+    });
+  }
+};
+
+export const setEmailVerificationCodeAuth = async (email: string) => {
+  try {
+    const response = await api.put(
+      `/auth/set-email-verification-code?Email=${email}`
+    );
+    return response;
+  } catch (error: any) {
+    enqueueSnackbar(error.response.data.message, {
+      variant: "error",
+    });
+  }
+};
+
+export const verifyEmailCode = async (email: string, code: string) => {
+  try {
+    const response = await api.put(
+      `/protecteduser/verify-email-code?Email=${email}&VerificationCode=${code}`
+    );
+    return response;
+  } catch (error: any) {
+    enqueueSnackbar(error.response.data.message, {
+      variant: "error",
+    });
+  }
+};
+
+export const verifyEmailCodeAuth = async (email: string, code: string) => {
+  try {
+    const response = await api.put(
+      `/auth/verify-email-code?Email=${email}&VerificationCode=${code}`
+    );
     return response;
   } catch (error: any) {
     enqueueSnackbar(error.response.data.message, {

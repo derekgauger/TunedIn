@@ -26,8 +26,11 @@ const ContainerPaper: React.FC<ContainerPaperProps> = ({ children, sx }) => {
           elevation={3}
           sx={{
             p: { xs: 2, sm: 4 },
-            backgroundColor: DARK ? "secondary.main" : "#fafafa",
+            // backgroundColor: DARK ? "secondary.main" : "#fafafa",
             minHeight: "100vh",
+            // background: 'url(https://www.toptal.com/designers/subtlepatterns/uploads/beanstalk-dark.png)'
+            // background: 'url(https://www.toptal.com/designers/subtlepatterns/uploads/country-quilt-dark.png)'
+            background: 'url(https://www.toptal.com/designers/subtlepatterns/uploads/black_mamba.png)'
           }}
         >
           {children}
