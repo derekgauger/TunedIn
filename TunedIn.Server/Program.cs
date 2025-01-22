@@ -5,6 +5,7 @@ using LoginSystem.Backend.Services;
 using Microsoft.EntityFrameworkCore;
 using TunedIn.Server.Data;
 using TunedIn.Server.Services;
+using MySqlConnector;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,8 +13,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 // Get the connection string from environment variable or fall back to configuration
-var connectionString = Environment.GetEnvironmentVariable("DatabaseConnection") 
-    ?? builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = Environment.GetEnvironmentVariable("DatabaseConnection")
+    ?? builder.Configuration.GetConnectionString("DatabaseConnection");
 
 // Configure JWT authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -23,8 +24,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         {
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(
-                Environment.GetEnvironmentVariable("JwtSecret") ?? 
-                builder.Configuration["Jwt:Secret"] ?? 
+                Environment.GetEnvironmentVariable("JwtSecret") ??
+                builder.Configuration["Jwt:Secret"] ??
                 throw new InvalidOperationException("JWT secret not configured")
             )),
             ValidateIssuer = false,
@@ -53,6 +54,30 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+using (var connection = new MySqlConnection(connectionString))
+{
+    try
+    {
+        connection.Open();
+        using (var command = new MySqlCommand("SHOW TABLES;", connection))
+        using (var reader = command.ExecuteReader())
+        {
+            Console.WriteLine("\nDatabase Tables:");
+            Console.WriteLine("----------------");
+            while (reader.Read())
+            {
+                Console.WriteLine($"Table: {reader.GetString(0)}");
+            }
+            Console.WriteLine("----------------\n");
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error listing tables: {ex.Message}");
+    }
+}
+
 
 app.UseDefaultFiles();
 app.UseStaticFiles();

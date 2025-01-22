@@ -22,6 +22,12 @@ namespace TunedIn.Server.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Picture>().ToTable("pictures");
+            modelBuilder.Entity<User>().ToTable("users");
+            modelBuilder.Entity<Membership>().ToTable("memberships");
+            modelBuilder.Entity<FormModel>().ToTable("forms");
+            modelBuilder.Entity<Log>().ToTable("logs");
+
             // Configure the Membership entity
             modelBuilder.Entity<Membership>()
                 .Property(m => m.Features)
