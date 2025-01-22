@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Avatar,
   Box,
@@ -88,10 +89,10 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   return 0;
 }
 
-function getComparator<Key extends keyof any>(
+function getComparator(
   order: Order,
-  orderBy: Key
-): (a: { [key in Key]: any }, b: { [key in Key]: any }) => number {
+  orderBy: keyof User
+): (a: User, b: User) => number {
   return order === "desc"
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
@@ -325,7 +326,7 @@ const ProfilesTable: React.FC<ProfilesTableProps> = ({
             <TableBody>
               {filteredProfiles
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((profile, index) => (
+                .map((profile) => (
                   <TableRow
                     hover
                     key={profile.id}

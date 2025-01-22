@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { enqueueSnackbar } from "notistack";
 import api from "../Utils/api";
 

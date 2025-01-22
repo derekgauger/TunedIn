@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import {
   AppBar,
@@ -31,7 +31,7 @@ import CustomTypography from "../../CustomUI/CustomTypography";
 
 const StyledAppBar = styled(AppBar, {
   shouldForwardProp: (prop) => prop !== "trigger" && prop !== "isHome",
-})<{ trigger: boolean; isHome: boolean }>(({ theme, trigger, isHome }) => ({
+})<{ trigger: boolean; isHome: boolean }>(({ theme, trigger }) => ({
   backgroundColor: trigger ? `${theme.palette.primary.dark}CC` : "primary.dark",
   backdropFilter: trigger ? "blur(10px)" : "none",
   boxShadow: trigger ? theme.shadows[4] : "none",
@@ -45,7 +45,7 @@ const StyledAppBar = styled(AppBar, {
   },
 }));
 
-const StyledToolbar = styled(Toolbar)(({ theme }) => ({
+const StyledToolbar = styled(Toolbar)(() => ({
   padding: "0 16px",
 }));
 
@@ -88,7 +88,7 @@ const UserButton = styled(Button)(() => ({
   },
 }));
 
-const Logo = styled("img")(({ theme }) => ({
+const Logo = styled("img")(() => ({
   height: "40px",
   transition: "transform 0.3s ease",
   "&:hover": {

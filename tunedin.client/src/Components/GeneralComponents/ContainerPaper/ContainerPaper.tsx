@@ -1,6 +1,5 @@
 import React from "react";
 import { Box, Container, Paper } from "@mui/material";
-import { DARK } from "../../../Utils/colors";
 
 interface ContainerPaperProps {
   children: React.ReactNode;

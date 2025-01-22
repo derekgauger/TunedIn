@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import { Menu, MenuItem } from "@mui/material";
 import ContainerPaper from "../GeneralComponents/ContainerPaper/ContainerPaper";
@@ -59,7 +60,7 @@ const ManageProfiles: React.FC = () => {
       } else {
         setLogs([]);
       }
-    } catch (error) {
+    } catch (error : any) {
       enqueueSnackbar(error.response.data.message, {
         variant: "error",
       });

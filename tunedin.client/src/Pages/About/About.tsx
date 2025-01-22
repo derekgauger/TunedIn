@@ -7,7 +7,7 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import { Business, People, EmojiObjects, History } from "@mui/icons-material";
+import { FitnessCenter, Verified, Build } from "@mui/icons-material";
 import ContainerPaper from "../../Components/GeneralComponents/ContainerPaper/ContainerPaper";
 import PageHeader from "../../Components/GeneralComponents/PageHeader/PageHeader";
 import { AboutListItemData, AboutSectionData } from "../../Utils/types";
@@ -22,17 +22,17 @@ const mission: AboutSectionData = {
     "My goal is to provide all types of athletes with a safe and effective workout program. Each program is carefully developed around the inidivudal and aims to promote athletic performance, prevent injury, and increase longivity in the sport.",
   listItems: [
     {
-      icon: <Business />,
+      icon: <FitnessCenter />,
       primary: "Years of Experience",
       secondary: "Strong background in many sports from Crossfit to XC mountain biking",
     },
     {
-      icon: <People />,
+      icon: <Verified />,
       primary: "Professionally Certified",
       secondary: "Through both the NSCA and NASM, I am certified as a Personal Trainer / Sports Nutritionist",
     },
     {
-      icon: <EmojiObjects />,
+      icon: <Build />,
       primary: "Flexible to Changes",
       secondary: "I'm able to make any changes to your program if you have time constraints or injuries",
     },

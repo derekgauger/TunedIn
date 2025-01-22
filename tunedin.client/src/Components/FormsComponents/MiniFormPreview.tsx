@@ -1,6 +1,6 @@
 import { Box, CircularProgress, Typography } from "@mui/material";
 import React from "react";
-import { FileData } from "../../Utils/types";
+import { FileData, FilePreview } from "../../Utils/types";
 
 interface MiniFormPreviewProps {
   miniPreviews: FilePreview[];
