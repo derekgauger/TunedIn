@@ -112,7 +112,7 @@ const ContactInfo: React.FC = () => {
 
     const handleChange =
         (panel: string) =>
-        (event: React.SyntheticEvent, isExpanded: boolean) => {
+        (_event: React.SyntheticEvent, isExpanded: boolean) => {
             setExpanded(isExpanded ? panel : false);
         };
 

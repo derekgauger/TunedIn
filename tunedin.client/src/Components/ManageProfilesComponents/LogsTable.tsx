@@ -118,7 +118,7 @@ const LogsTable: React.FC<LogsTableProps> = ({
     setOrderBy(property);
   };
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage);
   };
 
