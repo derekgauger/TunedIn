@@ -30,7 +30,7 @@ public class EmailTemplateService
       {
         Name = "welcome",
         Subject = "Welcome to Our Platform",
-        BodyTemplate = "Hi {Username},\n\nWelcome to our fitness training platform. We are exited to have you. Contact us to start a conversation about how we can help you reach your goals. To help us better understand you, fill out your profile information at https://localhost:5173/profile.\n\nBest regards,\nThe Trainers",
+        BodyTemplate = "Hi {Username},\n\nWelcome to our fitness training platform. We are exited to have you. Contact us to start a conversation about how we can help you reach your goals. To help us better understand you, fill out your profile information at https://www.tunedinathlete.com/profile.\n\nBest regards,\nThe Trainers",
         LogType = "Welcome Email",
         LogMessage = "Sent welcome email to {Username}"
 
