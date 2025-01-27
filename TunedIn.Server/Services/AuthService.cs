@@ -25,6 +25,7 @@ namespace LoginSystem.Backend.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
+        private const int TOKEN_EXPIRY_DAYS = 7;
 
         public AuthService(ApplicationDbContext context, IConfiguration configuration)
         {
@@ -160,7 +161,7 @@ namespace LoginSystem.Backend.Services
                     new Claim(ClaimTypes.Surname, user.LastName),
                     new Claim(ClaimTypes.MobilePhone, user.PhoneNumber)
                 }),
-                Expires = DateTime.MaxValue, // Token never expires
+                Expires = DateTime.UtcNow.AddDays(TOKEN_EXPIRY_DAYS),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);

@@ -18,7 +18,7 @@ namespace LoginSystem.Backend.Models
         public Boolean IsAdmin { get; set; } = false;
         public Boolean VerifiedEmail { get; set; } = false;
         public Boolean VerifiedPhone { get; set; } = false;
-        public DateTime LatestChangeMembershipRequest { get; set; } = DateTime.MinValue;
+        public DateTime LatestChangeMembershipRequest { get; set; } = new DateTime(2000, 1, 1);
         public int EmailVerificationCode { get; set; }
     }
 
