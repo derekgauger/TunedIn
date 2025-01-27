@@ -44,7 +44,7 @@ const accordionData: AccordionSection[] = [
             {
                 icon: <PhoneIcon />,
                 primary: "Phone",
-                secondary: "262-581-7793",
+                secondary: "262-581-3865",
             },
             {
                 icon: <EmailIcon />,
